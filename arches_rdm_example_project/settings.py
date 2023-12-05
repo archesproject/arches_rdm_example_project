@@ -131,9 +131,10 @@ INSTALLED_APPS = (
     "compressor",
     # "silk",
     "arches_rdm_example_project",
+    "arches_rdm",
 )
 
-ARCHES_APPLICATIONS = ()
+ARCHES_APPLICATIONS = ("arches_rdm",)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
