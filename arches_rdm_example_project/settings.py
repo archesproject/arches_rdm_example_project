@@ -377,12 +377,6 @@ LANGUAGES = [
 #   ('es', _('Spanish')),
 ]
 
-
-GDAL_LIBRARY_PATH = "/Applications/Postgres.app/Contents/Versions/15/lib/libgdal.dylib"
-ELASTICSEARCH_HOSTS = [{"scheme": "http", "host": "localhost", "port": ELASTICSEARCH_HTTP_PORT}]
-OVERRIDE_RESOURCE_MODEL_LOCK = True
-
-
 # override this to permenantly display/hide the language switcher
 SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
 
