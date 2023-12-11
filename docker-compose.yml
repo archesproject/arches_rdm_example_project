@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+    arches_rdm_example_project:
+      container_name: arches_rdm_example_project
+      image: fargeo/arches_rdm_example_project
+      build:
+        args:
+          # These are not delivered from the env_file - they're from --build-arg arguments.
+          ARCHES_RDM_HOST_DIR: ../arches-rdm/
+          ARCHES_CORE_HOST_DIR: ../arches/
+        context: ..
+        dockerfile: arches_rdm_example_project/Dockerfile
+      command: run_arches
+      volumes:
+        # To change these variables, modify/add the .env file prior to launch - NOT env_file.env
+        - ${ARCHES_CORE_HOST_DIR:-../arches/}:/web_root/arches
+        - ${ARCHES_RDM_HOST_DIR:-../arches-rdm/}:/web_root/arches-rdm
+        - ./:/web_root/arches_rdm_example_project
+        - $HOME/.aws/:/root/.aws/
+      ports:
+        - ${HOST_PROJECT_PORT:-8029}:80
+        - ${HOST_PROJECT_DEBUG_PORT:-5688}:5678
+      stdin_open: true
+      env_file:
+        - ./docker/env_file.env
+      tty: true
+      labels:
+        - traefik.http.routers.my-container.rule=Host(`arches_rdm_example_project.local`)
+        - traefik.frontend.passHostHeader=true
+
+    arches_rdm_example_project-webpack:
+      container_name: arches_rdm_example_project-webpack
+      image: fargeo/arches_rdm_example_project-webpack
+      build:
+        context: ..
+        dockerfile: arches_rdm_example_project/docker/webpack/Dockerfile
+      command: run_webpack
+      volumes:
+        - ../arches/:/web_root/arches
+        - ./:/web_root/arches_rdm_example_project
+        - ../arches-rdm/:/web_root/arches-rdm
+      env_file:
+        - ./docker/webpack/env_file.env
+      # ports:
+      #   - 8080:8080
+      stdin_open: true
+      tty: true
+
+networks:
+  default:
+    external: true
+    name: arches7-0-dev
