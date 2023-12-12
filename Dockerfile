@@ -21,7 +21,7 @@ WORKDIR ${ARCHES_RDM_ROOT}
 RUN source ../ENV/bin/activate && pip install -e . && pip uninstall arches -y
 
 WORKDIR ${ARCHES_ROOT}
-RUN ls -la .. && sleep 10 && source ../ENV/bin/activate && pip install -e . && pip install -r arches/install/requirements.txt && pip install -r arches/install/requirements_dev.txt
+RUN source ../ENV/bin/activate && pip install -e . && pip install -r arches/install/requirements.txt && pip install -r arches/install/requirements_dev.txt
 
 # TODO: These are required for non-dev installs, currently only depends on arches/afs
 #RUN pip install -r requirements.txt
