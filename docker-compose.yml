@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-    arches_rdm_example_project:
-      container_name: arches_rdm_example_project
+    arches-rdm-example-project:
+      container_name: arches-rdm-example-project
       image: fargeo/arches_rdm_example_project
       build:
         args:
@@ -28,8 +28,8 @@ services:
         - traefik.http.routers.my-container.rule=Host(`arches_rdm_example_project.local`)
         - traefik.frontend.passHostHeader=true
 
-    arches_rdm_example_project-webpack:
-      container_name: arches_rdm_example_project-webpack
+    arches-rdm-example-project-webpack:
+      container_name: arches-rdm-example-project-webpack
       image: fargeo/arches_rdm_example_project-webpack
       build:
         context: ..
