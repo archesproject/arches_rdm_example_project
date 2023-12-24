@@ -5,110 +5,218 @@ Django settings for arches_rdm_example_project project.
 import json
 import os
 import sys
+from typing import Literal
 import arches
 import inspect
 import semantic_version
 from django.utils.translation import gettext_lazy as _
+from arches.settings import *
 
-try:
-    from arches.settings import *
-except ImportError:
-    pass
 
-APP_NAME = 'arches_rdm_example_project'
-APP_VERSION = semantic_version.Version(major=0, minor=0, patch=0)
+def get_env_variable(var_name):
+    msg = "Set the %s environment variable"
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = msg % var_name
+        raise ImproperlyConfigured(error_msg)
+
+
+def get_optional_env_variable(var_name, default=None) -> str:
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        return default
+
+
+SECRETS_MODE = get_optional_env_variable("SECRETS_MODE", "ENV")
+
+APP_NAME = "arches_rdm_example_project"
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-MIN_ARCHES_VERSION = arches.__version__
-MAX_ARCHES_VERSION = arches.__version__
+DB_NAME = APP_NAME
+DB_USER = get_optional_env_variable("PGUSERNAME", "postgres")
+DB_PASSWORD = get_optional_env_variable("PGPASSWORD", "postgis")
+DB_HOST = get_optional_env_variable("PGHOST", "localhost")
+DB_PORT = get_optional_env_variable("PGPORT", "5432")
+ES_USER = get_optional_env_variable("ESUSER", "elastic")
+ES_PASSWORD = get_optional_env_variable("ESPASSWORD", "E1asticSearchforArche5")
+ES_HOST = get_optional_env_variable("ESHOST", "localhost")
+ES_PORT = int(get_optional_env_variable("ESPORT", "9200"))
+WEBPACK_DEVELOPMENT_SERVER_PORT = int(
+    get_optional_env_variable("WEBPACKDEVELOPMENTSERVERPORT", "8022")
+)
+ES_PROTOCOL = get_optional_env_variable("ESPROTOCOL", "http")
+ES_VALIDATE_CERT = get_optional_env_variable("ESVALIDATE", "True") != "False"
+DEBUG = bool(get_optional_env_variable("DJANGO_DEBUG", False))
+KIBANA_URL = get_optional_env_variable("KIBANA_URL", "http://localhost:5601/")
+KIBANA_CONFIG_BASEPATH = get_optional_env_variable("KIBANACONFIGBASEPATH", "kibana")
+RESOURCE_IMPORT_LOG = get_optional_env_variable(
+    "RESOURCEIMPORTLOG", os.path.join(APP_ROOT, "logs", "resource_import.log")
+)
+ARCHES_LOG_PATH = get_optional_env_variable(
+    "ARCHESLOGPATH", os.path.join(ROOT_DIR, "arches.log")
+)
 
+STORAGE_BACKEND = get_optional_env_variable(
+    "STORAGEBACKEND", "django.core.files.storage.FileSystemStorage"
+)
 
-WEBPACK_LOADER = {
-    "DEFAULT": {
-        "STATS_FILE": os.path.join(APP_ROOT, 'webpack/webpack-stats.json'),
+if STORAGE_BACKEND == "storages.backends.s3.S3Storage":
+    import psutil
+
+    STORAGE_OPTIONS = {
+        "bucket_name": get_env_variable("S3BUCKETNAME"),
+        "file_overwrite": get_optional_env_variable("S3FILEOVERWRITE", True),
+        "signature_version": get_optional_env_variable("S3SIGNATUREVERSION", "s3v4"),
+        "region": get_optional_env_variable("S3REGION", "us-west-1"),
+        "max_memory_size": get_optional_env_variable(
+            "S3MAXMEMORY", str(psutil.virtual_memory().available * 0.5)
+        ),
+    }
+else:
+    STORAGE_OPTIONS = {}
+
+STORAGES = {
+    "default": {
+        "BACKEND": STORAGE_BACKEND,
+        "OPTIONS": STORAGE_OPTIONS,
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
-DATATYPE_LOCATIONS.append('arches_rdm_example_project.datatypes')
-FUNCTION_LOCATIONS.append('arches_rdm_example_project.functions')
-ETL_MODULE_LOCATIONS.append('arches_rdm_example_project.etl_modules')
-SEARCH_COMPONENT_LOCATIONS.append('arches_rdm_example_project.search_components')
+if SECRETS_MODE == "AWS":
+    try:
+        import boto3
+        import json
 
-LOCALE_PATHS.append(os.path.join(APP_ROOT, 'locale'))
+        AWS_REGION = get_optional_env_variable("AWS_REGION", "us-west-1")
+        ES_SECRET_ID = get_env_variable("ES_SECRET_ID")
+        DB_SECRET_ID = get_env_variable("DB_SECRET_ID")
+        client = boto3.client("secretsmanager", region_name=AWS_REGION)
+        es_secret = json.loads(
+            client.get_secret_value(SecretId=ES_SECRET_ID)["SecretString"]
+        )
+        db_secret = json.loads(
+            client.get_secret_value(SecretId=DB_SECRET_ID)["SecretString"]
+        )
+        DB_NAME = APP_NAME
+        DB_USER = db_secret["user"]
+        DB_PASSWORD = db_secret["password"]
+        DB_HOST = db_secret["host"]
+        DB_PORT = db_secret["port"]
+        ES_USER = es_secret["user"]
+        ES_PASSWORD = es_secret["password"]
+        ES_HOST = es_secret["host"]
+    except (ModuleNotFoundError, ImportError):
+        pass
+
+APP_VERSION = semantic_version.Version(major=1, minor=0, patch=0, prerelease=("a", "0"))
+MIN_ARCHES_VERSION = "7.5.0b0"
+MAX_ARCHES_VERSION = "7.5.1"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console": {
+            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "WARNING",  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+            "class": "logging.FileHandler",
+            "filename": ARCHES_LOG_PATH,
+            "formatter": "console",
+        },
+        "console": {
+            "level": "WARNING",
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+    },
+    "loggers": {
+        "arches": {
+            "handlers": ["file", "console"],
+            "level": "WARNING",
+            "propagate": True,
+        }
+    },
+}
+
+STATICFILES_DIRS = (
+    os.path.join(APP_ROOT, "media", "build"),
+    os.path.join(APP_ROOT, "media"),
+) + STATICFILES_DIRS
+
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "STATS_FILE": os.path.join(APP_ROOT, "webpack/webpack-stats.json"),
+    },
+}
+
+DATATYPE_LOCATIONS.append("arches_rdm_example_project.datatypes")
+FUNCTION_LOCATIONS.append("arches_rdm_example_project.functions")
+ETL_MODULE_LOCATIONS.append("arches_rdm_example_project.etl_modules")
+SEARCH_COMPONENT_LOCATIONS.append("arches_rdm_example_project.search_components")
+
+LOCALE_PATHS.append(os.path.join(APP_ROOT, "locale"))
 
 FILE_TYPE_CHECKING = False
-FILE_TYPES = ["bmp", "gif", "jpg", "jpeg", "pdf", "png", "psd", "rtf", "tif", "tiff", "xlsx", "csv", "zip"]
-FILENAME_GENERATOR = "arches.app.utils.storage_filename_generator.generate_filename"
-UPLOADED_FILES_DIR = "uploadedfiles"
+FILE_TYPES = [
+    "bmp",
+    "gif",
+    "jpg",
+    "jpeg",
+    "pdf",
+    "png",
+    "psd",
+    "rtf",
+    "tif",
+    "tiff",
+    "xlsx",
+    "csv",
+    "zip",
+]
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i=u^q2afp%qq&c4-ck9%&7xk-pk#m_y6#a+1j^mxj%vw@tyy_i'
-
+SECRET_KEY = get_optional_env_variable(
+    "DJANGO_SECRET_KEY", "69i^0^enn7-%nww6no&e%+62($hto5vk0(#tp+ygl1!9$2_^5y"
+)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ROOT_URLCONF = 'arches_rdm_example_project.urls'
-
+ROOT_URLCONF = "arches_rdm_example_project.urls"
 # Modify this line as needed for your project to connect to elasticsearch with a password that you generate
-ELASTICSEARCH_CONNECTION_OPTIONS = {"request_timeout": 30, "verify_certs": False, "basic_auth": ("elastic", "E1asticSearchforArche5")}
-
-# If you need to connect to Elasticsearch via an API key instead of username/password, use the syntax below:
-# ELASTICSEARCH_CONNECTION_OPTIONS = {"timeout": 30, "verify_certs": False, "api_key": "<ENCODED_API_KEY>"}
-# ELASTICSEARCH_CONNECTION_OPTIONS = {"timeout": 30, "verify_certs": False, "api_key": ("<ID>", "<API_KEY>")}
-
-# Your Elasticsearch instance needs to be configured with xpack.security.enabled=true to use API keys - update elasticsearch.yml or .env file and restart.
-
-# Set the ELASTIC_PASSWORD environment variable in either the docker-compose.yml or .env file to the password you set for the elastic user,
-# otherwise a random password will be generated.
-
-# API keys can be generated via the Elasticsearch API: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-create-api-key.html
-# Or Kibana: https://www.elastic.co/guide/en/kibana/current/api-keys.html
-
+ELASTICSEARCH_HOSTS = [{"scheme": ES_PROTOCOL, "host": ES_HOST, "port": ES_PORT}]
+ELASTICSEARCH_CONNECTION_OPTIONS = {"timeout": 30, "basic_auth": (ES_USER, ES_PASSWORD)}
 # a prefix to append to all elasticsearch indexes, note: must be lower case
-ELASTICSEARCH_PREFIX = 'arches_rdm_example_project'
+ELASTICSEARCH_PREFIX = APP_NAME
 
 ELASTICSEARCH_CUSTOM_INDEXES = []
-# [{
-#     'module': 'arches_rdm_example_project.search_indexes.sample_index.SampleIndex',
-#     'name': 'my_new_custom_index', <-- follow ES index naming rules
-#     'should_update_asynchronously': False  <-- denotes if asynchronously updating the index would affect custom functionality within the project.
-# }]
-
-KIBANA_URL = "http://localhost:5601/"
-KIBANA_CONFIG_BASEPATH = "kibana"  # must match Kibana config.yml setting (server.basePath) but without the leading slash,
-# also make sure to set server.rewriteBasePath: true
 
 LOAD_DEFAULT_ONTOLOGY = False
 LOAD_PACKAGE_ONTOLOGIES = True
-
-# This is the namespace to use for export of data (for RDF/XML for example)
-# It must point to the url where you host your site
-# Make sure to use a trailing slash
-ARCHES_NAMESPACE_FOR_DATA_EXPORT = "http://localhost:8000/"
-
 DATABASES = {
     "default": {
         "ATOMIC_REQUESTS": False,
         "AUTOCOMMIT": True,
         "CONN_MAX_AGE": 0,
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "HOST": "localhost",
-        "NAME": "arches_rdm_example_project",
+        "HOST": DB_HOST,
+        "NAME": APP_NAME,
         "OPTIONS": {},
-        "PASSWORD": "postgis",
-        "PORT": "5432",
+        "PASSWORD": DB_PASSWORD,
+        "PORT": DB_PORT,
         "POSTGIS_TEMPLATE": "template_postgis",
-        "TEST": {
-            "CHARSET": None,
-            "COLLATION": None,
-            "MIRROR": None,
-            "NAME": None
-        },
+        "TEST": {"CHARSET": None, "COLLATION": None, "MIRROR": None, "NAME": None},
         "TIME_ZONE": None,
-        "USER": "postgres"
+        "USER": DB_USER,
     }
 }
 
-SEARCH_THUMBNAILS = False
 
 INSTALLED_APPS = (
     "webpack_loader",
@@ -166,62 +274,62 @@ TEMPLATES = build_templates_config(
     arches_applications=ARCHES_APPLICATIONS,
 )
 
-ALLOWED_HOSTS = []
-
-SYSTEM_SETTINGS_LOCAL_PATH = os.path.join(APP_ROOT, 'system_settings', 'System_Settings.json')
-WSGI_APPLICATION = 'arches_rdm_example_project.wsgi.application'
+ALLOWED_HOSTS = get_optional_env_variable("DOMAIN_NAMES", "*").split()
+SYSTEM_SETTINGS_LOCAL_PATH = os.path.join(
+    APP_ROOT, "system_settings", "System_Settings.json"
+)
+WSGI_APPLICATION = "arches_rdm_example_project.wsgi.application"
 
 # URL that handles the media served from MEDIA_ROOT, used for managing stored files.
 # It must end in a slash if set to a non-empty value.
-MEDIA_URL = '/files/'
+MEDIA_URL = "/files/"
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-MEDIA_ROOT =  os.path.join(APP_ROOT)
+MEDIA_ROOT = os.path.join(APP_ROOT)
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(APP_ROOT, "staticfiles")
+STATIC_ROOT = get_optional_env_variable("DJANGO_STATIC_ROOT", "/var/www/media/")
 
 # when hosting Arches under a sub path set this value to the sub path eg : "/{sub_path}/"
 FORCE_SCRIPT_NAME = None
 
-RESOURCE_IMPORT_LOG = os.path.join(APP_ROOT, 'logs', 'resource_import.log')
-DEFAULT_RESOURCE_IMPORT_USER = {'username': 'admin', 'userid': 1}
+DEFAULT_RESOURCE_IMPORT_USER = {"username": "admin", "userid": 1}
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'console': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console": {
+            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
         },
     },
-    'handlers': {
-        'file': {
-            'level': 'WARNING',  # DEBUG, INFO, WARNING, ERROR
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(APP_ROOT, 'arches.log'),
-            'formatter': 'console'
+    "handlers": {
+        "file": {
+            "level": "WARNING",  # DEBUG, INFO, WARNING, ERROR
+            "class": "logging.FileHandler",
+            "filename": os.path.join(APP_ROOT, "arches.log"),
+            "formatter": "console",
         },
-        'console': {
-            'level': 'WARNING',
-            'class': 'logging.StreamHandler',
-            'formatter': 'console'
+        "console": {
+            "level": "WARNING",
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+    },
+    "loggers": {
+        "arches": {
+            "handlers": ["file", "console"],
+            "level": "WARNING",
+            "propagate": True,
         }
     },
-    'loggers': {
-        'arches': {
-            'handlers': ['file', 'console'],
-            'level': 'WARNING',
-            'propagate': True
-        }
-    }
 }
 
 
@@ -229,16 +337,16 @@ LOGGING = {
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
 
 # Unique session cookie ensures that logins are treated separately for each app
-SESSION_COOKIE_NAME = 'arches_rdm_example_project'
+SESSION_COOKIE_NAME = APP_NAME
 
 # For more info on configuring your cache: https://docs.djangoproject.com/en/2.2/topics/cache/
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     },
-    'user_permission': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'user_permission_cache',
+    "user_permission": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "user_permission_cache",
     },
 }
 
@@ -247,24 +355,29 @@ HIDE_EMPTY_NODES_IN_REPORT = False
 
 BYPASS_UNIQUE_CONSTRAINT_TILE_VALIDATION = False
 BYPASS_REQUIRED_VALUE_TILE_VALIDATION = False
+PUBLIC_SERVER_ADDRESS = get_optional_env_variable(
+    "PUBLIC_SERVER_ADDRESS", "http://localhost:8000/"
+)
+DATE_IMPORT_EXPORT_FORMAT = (
+    "%Y-%m-%d"  # Custom date format for dates imported from and exported to csv
+)
 
-DATE_IMPORT_EXPORT_FORMAT = "%Y-%m-%d" # Custom date format for dates imported from and exported to csv
 
 # This is used to indicate whether the data in the CSV and SHP exports should be
 # ordered as seen in the resource cards or not.
 EXPORT_DATA_FIELDS_IN_CARD_ORDER = False
 
-#Identify the usernames and duration (seconds) for which you want to cache the time wheel
-CACHE_BY_USER = {'anonymous': 3600 * 24}
-TILE_CACHE_TIMEOUT = 600 #seconds
-CLUSTER_DISTANCE_MAX = 5000 #meters
+# Identify the usernames and duration (seconds) for which you want to cache the time wheel
+CACHE_BY_USER = {"anonymous": 3600 * 24}
+TILE_CACHE_TIMEOUT = 600  # seconds
+CLUSTER_DISTANCE_MAX = 5000  # meters
 GRAPH_MODEL_CACHE_TIMEOUT = None
 
-OAUTH_CLIENT_ID = ''  #'9JCibwrWQ4hwuGn5fu2u1oRZSs9V6gK8Vu8hpRC4'
+OAUTH_CLIENT_ID = ""  #'9JCibwrWQ4hwuGn5fu2u1oRZSs9V6gK8Vu8hpRC4'
 
-APP_TITLE = 'Arches | Heritage Data Management'
-COPYRIGHT_TEXT = 'All Rights Reserved.'
-COPYRIGHT_YEAR = '2019'
+APP_TITLE = "Arches | Heritage Data Management"
+COPYRIGHT_TEXT = "All Rights Reserved."
+COPYRIGHT_YEAR = "2019"
 
 ENABLE_CAPTCHA = False
 # RECAPTCHA_PUBLIC_KEY = ''
@@ -285,18 +398,30 @@ EMAIL_HOST_USER = "xxxx@xxx.com"
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-CELERY_BROKER_URL = "" # RabbitMQ --> "amqp://guest:guest@localhost",  Redis --> "redis://localhost:6379/0"
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'django-db' # Use 'django-cache' if you want to use your cache as your backend
-CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_URL = "amqp://{}:{}@localhost".format(
+    get_optional_env_variable("RABBITMQ_USER", "guest"),
+    get_optional_env_variable("RABBITMQ_PASS", "guest"),
+)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_RESULT_BACKEND = (
+    "django-db"  # Use 'django-cache' if you want to use your cache as your backend
+)
+CELERY_TASK_SERIALIZER = "json"
 
 
 CELERY_SEARCH_EXPORT_EXPIRES = 24 * 3600  # seconds
 CELERY_SEARCH_EXPORT_CHECK = 3600  # seconds
 
 CELERY_BEAT_SCHEDULE = {
-    "delete-expired-search-export": {"task": "arches.app.tasks.delete_file", "schedule": CELERY_SEARCH_EXPORT_CHECK,},
-    "notification": {"task": "arches.app.tasks.message", "schedule": CELERY_SEARCH_EXPORT_CHECK, "args": ("Celery Beat is Running",),},
+    "delete-expired-search-export": {
+        "task": "arches.app.tasks.delete_file",
+        "schedule": CELERY_SEARCH_EXPORT_CHECK,
+    },
+    "notification": {
+        "task": "arches.app.tasks.message",
+        "schedule": CELERY_SEARCH_EXPORT_CHECK,
+        "args": ("Celery Beat is Running",),
+    },
 }
 
 # Set to True if you want to send celery tasks to the broker without being able to detect celery.
@@ -305,35 +430,10 @@ CELERY_BEAT_SCHEDULE = {
 # way of monitoring celery so you can detect the background task not being available.
 CELERY_CHECK_ONLY_INSPECT_BROKER = False
 
-CANTALOUPE_DIR = os.path.join(ROOT_DIR, UPLOADED_FILES_DIR)
+CANTALOUPE_DIR = os.path.join(ROOT_DIR, "uploadedfiles")
 CANTALOUPE_HTTP_ENDPOINT = "http://localhost:8182/"
 
 ACCESSIBILITY_MODE = False
-
-RENDERERS = [
-    {
-        "name": "imagereader",
-        "title": "Image Reader",
-        "description": "Displays most image file types",
-        "id": "5e05aa2e-5db0-4922-8938-b4d2b7919733",
-        "iconclass": "fa fa-camera",
-        "component": "views/components/cards/file-renderers/imagereader",
-        "ext": "",
-        "type": "image/*",
-        "exclude": "tif,tiff,psd",
-    },
-    {
-        "name": "pdfreader",
-        "title": "PDF Reader",
-        "description": "Displays pdf files",
-        "id": "09dec059-1ee8-4fbd-85dd-c0ab0428aa94",
-        "iconclass": "fa fa-file",
-        "component": "views/components/cards/file-renderers/pdfreader",
-        "ext": "pdf",
-        "type": "application/pdf",
-        "exclude": "tif,tiff,psd",
-    },
-]
 
 # By setting RESTRICT_MEDIA_ACCESS to True, media file requests outside of Arches will checked against nodegroup permissions.
 RESTRICT_MEDIA_ACCESS = False
@@ -371,16 +471,14 @@ LANGUAGE_CODE = "en"
 # {langcode}-{regioncode} eg: en, en-gb ....
 # a list of language codes can be found here http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGES = [
-#   ('de', _('German')),
-    ('en', _('English')),
-#   ('en-gb', _('British English')),
-#   ('es', _('Spanish')),
+    #   ('de', _('German')),
+    ("en", _("English")),
+    #   ('en-gb', _('British English')),
+    #   ('es', _('Spanish')),
 ]
 
 # override this to permenantly display/hide the language switcher
 SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
-
-DOCKER = False
 
 try:
     from .package_settings import *
@@ -397,16 +495,6 @@ except ImportError as e:
         from settings_local import *
     except ImportError as e:
         pass
-
-if DOCKER:
-    try:
-        from .settings_docker import *
-    except ImportError:
-        try:
-            from settings_docker import *
-        except ImportError as e:
-            pass
-
 # returns an output that can be read by NODEJS
 if __name__ == "__main__":
     transmit_webpack_django_config(
@@ -417,4 +505,3 @@ if __name__ == "__main__":
         static_url=STATIC_URL,
         webpack_development_server_port=WEBPACK_DEVELOPMENT_SERVER_PORT,
     )
-

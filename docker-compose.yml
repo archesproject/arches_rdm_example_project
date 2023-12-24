@@ -23,6 +23,7 @@ services:
       stdin_open: true
       env_file:
         - ./docker/env_file.env
+        - ${OPTIONAL_ENV_FILE:-/dev/null}
       tty: true
       labels:
         - traefik.http.routers.my-container.rule=Host(`arches_rdm_example_project.local`)
@@ -44,6 +45,25 @@ services:
       # ports:
       #   - 8080:8080
       stdin_open: true
+      tty: true
+
+    arches-rdm-example-project-production:
+      container_name: arches-rdm-example-project-production
+      image: fargeo/arches_rdm_example_project-production
+      build:
+        args:
+          # These are not delivered from the env_file - they're from --build-arg arguments.
+          ARCHES_RDM_HOST_DIR: ../arches-rdm/
+        context: ..
+        dockerfile: arches_rdm_example_project/docker/production/Dockerfile
+      command: run_arches
+      ports:
+        - ${HOST_PROJECT_PORT:-8029}:80
+        - ${HOST_PROJECT_DEBUG_PORT:-5688}:5678
+      stdin_open: true
+      env_file:
+        - ./docker/env_file.env
+        - ${OPTIONAL_ENV_FILE:-/dev/null}
       tty: true
 
 networks:

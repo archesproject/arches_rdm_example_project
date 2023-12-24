@@ -13,4 +13,5 @@ arches_rdm_example_project/settings_local.py
 arches_rdm_example_project/webpack/webpack-stats.json
 arches_rdm_example_project/webpack/webpack-user-config.js
 .vscode/
+.env
 CACHE

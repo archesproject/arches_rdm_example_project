@@ -1,0 +1,28 @@
+{
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "inferenceAccelerators": [],
+    "containerDefinitions": [
+        {
+            "name": "arches",
+            "image": "ecs-devops-sandbox-repository:00000",
+            "resourceRequirements": null,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": "8000",
+                    "protocol": "tcp"
+                }
+            ]
+        }
+    ],
+    "volumes": [],
+    "networkMode": "awsvpc",
+    "memory": "8192",
+    "cpu": "4096",
+    "executionRoleArn": "arn:aws:iam::889276910795:role/arches-execution-role",
+    "family": "ecs-devops-sandbox-task-definition",
+    "taskRoleArn": "arn:aws:iam::889276910795:role/arches-task-role",
+    "placementConstraints": []
+}

@@ -103,16 +103,6 @@ install_yarn_components() {
 	fi
 }
 
-#### Misc
-copy_settings_local() {
-	# The settings_local.py in ${ARCHES_ROOT}/arches/ gets ignored if running manage.py from a custom Arches project instead of Arches core app
-	echo "Copying ${APP_FOLDER}/docker/settings_docker.py to ${APP_FOLDER}/${ARCHES_PROJECT}/settings_docker.py..."
-	cp ${APP_FOLDER}/docker/settings_docker.py ${APP_FOLDER}/${ARCHES_PROJECT}/settings_docker.py
-	
-	# Copy settings_local if it does not exist
-	cp -n ${APP_FOLDER}/docker/settings_local.py ${APP_FOLDER}/${ARCHES_PROJECT}/settings_local.py
-}
-
 #### Run commands
 
 start_celery_supervisor() {
@@ -154,11 +144,25 @@ run_django_server() {
 	exec /bin/bash -c "source ../ENV/bin/activate && pip install debugpy -t /tmp && python -Wdefault /tmp/debugpy --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:${DJANGO_PORT}"
 }
 
+# "exec" means that it will finish building???
+run_gunicorn() {
+	echo ""
+	echo "----- *** RUNNING DJANGO DEVELOPMENT SERVER *** -----"
+	echo ""
+	cd ${APP_FOLDER}
+    echo "Running Django"
+	exec /bin/bash -c "source ../ENV/bin/activate && gunicorn arches_rdm_example_project.wsgi && /etc/init.d/nginx start& && pip install debugpy -t /tmp"
+}
+
 #### Main commands
 run_arches() {
 	init_arches
 	install_yarn_components
 	run_django_server
+}
+
+run_arches_production() {
+	run_gunicorn
 }
 
 run_webpack() {
@@ -193,23 +197,24 @@ do
 	case ${key} in
 		run_arches)
 			start_celery_supervisor
-			copy_settings_local
 			wait_for_db
 			run_arches
 		;;
+		run_arches_production)
+			start_celery_supervisor #this will go away
+			wait_for_db
+			run_arches_production
+		;;
 		setup_arches)
 			start_celery_supervisor
-			copy_settings_local
 			wait_for_db
 			setup_arches
 		;;
 		run_tests)
-			copy_settings_local
 			wait_for_db
 			run_tests
 		;;
 		run_migrations)
-			copy_settings_local
 			wait_for_db
 			run_migrations
 		;;
