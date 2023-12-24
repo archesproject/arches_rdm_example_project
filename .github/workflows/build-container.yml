@@ -3,7 +3,7 @@ name: Build Container Image
 on:
   push:
     branches:
-      - test/**
+      - "test/**"
 jobs:
   build:
     name: Build Docker Image and Push
