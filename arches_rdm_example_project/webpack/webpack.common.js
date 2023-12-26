@@ -20,6 +20,7 @@ const { buildVueFilePathLookup } = require('./webpack-utils/build-vue-filepath-l
 module.exports = () => {
     return new Promise((resolve, _reject) => {
         const createWebpackConfig = function(data) {  // reads from application's settings.py
+            console.log('rawData', data);
             const parsedData = JSON.parse(data);
             console.log('Data imported from settings.py:', parsedData)
             
