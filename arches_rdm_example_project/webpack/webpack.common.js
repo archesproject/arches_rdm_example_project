@@ -22,7 +22,7 @@ module.exports = () => {
         const createWebpackConfig = function(data) {  // reads from application's settings.py
             console.trace('stack trace')
             console.log('rawData', data);
-            console.log(Buffer.from(bytes).toString('ascii'))
+            console.log(Buffer.from(data).toString('ascii'))
             const parsedData = JSON.parse(data);
             console.log('Data imported from settings.py:', parsedData)
             
