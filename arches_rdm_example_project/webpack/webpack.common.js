@@ -20,6 +20,7 @@ const { buildVueFilePathLookup } = require('./webpack-utils/build-vue-filepath-l
 module.exports = () => {
     return new Promise((resolve, _reject) => {
         const createWebpackConfig = function(data) {  // reads from application's settings.py
+            projectSettings.stdout.removeAllListeners('data') 
             console.trace('stack trace')
             console.log('rawData', data);
             console.log(Buffer.from(data).toString('ascii'))
@@ -443,7 +444,6 @@ module.exports = () => {
                     ],
                 },
             });
-            projectSettings.stdout.removeAllListeners('data') 
         };
         console.log('ohai');
         console.trace('stack trace for import');
