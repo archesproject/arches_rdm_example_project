@@ -444,20 +444,20 @@ module.exports = () => {
         };
 
         let projectSettings = spawn(
-            'python',
+            '/opt/ENV/bin/python',
             [Path.resolve(__dirname, Path.parse(__dirname)['dir'], 'settings.py')]
         );
         projectSettings.stderr.on("data", process.stderr.write);
         projectSettings.stdout.on("data", createWebpackConfig);
 
-        projectSettings.on('error', () => {
-            projectSettings = spawn(
-                'python3',
-                [Path.resolve(__dirname, Path.parse(__dirname)['dir'], 'settings.py')]
-            );
-            projectSettings.stderr.on("data", process.stderr.write);
-            projectSettings.stdout.on("data", createWebpackConfig);
-        });
+        // projectSettings.on('error', () => {
+        //     projectSettings = spawn(
+        //         'python3',
+        //         [Path.resolve(__dirname, Path.parse(__dirname)['dir'], 'settings.py')]
+        //     );
+        //     projectSettings.stderr.on("data", process.stderr.write);
+        //     projectSettings.stdout.on("data", createWebpackConfig);
+        // });
 
     });
 };
