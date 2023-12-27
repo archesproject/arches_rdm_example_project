@@ -147,11 +147,11 @@ run_django_server() {
 # "exec" means that it will finish building???
 run_gunicorn() {
 	echo ""
-	echo "----- *** RUNNING DJANGO DEVELOPMENT SERVER *** -----"
+	echo "----- *** RUNNING DJANGO PRODUCTION SERVER *** -----"
 	echo ""
 	cd ${APP_FOLDER}
     echo "Running Django"
-	exec /bin/bash -c "source ../ENV/bin/activate && gunicorn arches_rdm_example_project.wsgi && /etc/init.d/nginx start& && pip install debugpy -t /tmp"
+	exec /bin/bash -c "source ../ENV/bin/activate && (/etc/init.d/nginx start&) && gunicorn arches_rdm_example_project.wsgi && pip install debugpy -t /tmp"
 }
 
 #### Main commands

@@ -56,9 +56,9 @@ services:
           ARCHES_RDM_HOST_DIR: ../arches-rdm/
         context: ..
         dockerfile: arches_rdm_example_project/docker/production/Dockerfile
-      command: run_arches
+      command: run_arches_production
       ports:
-        - ${HOST_PROJECT_PORT:-8029}:80
+        - ${HOST_PROJECT_PORT:-8029}:443
         - ${HOST_PROJECT_DEBUG_PORT:-5688}:5678
       stdin_open: true
       env_file:

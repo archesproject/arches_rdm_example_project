@@ -31,6 +31,8 @@ RUN chown elasticsearch:elasticsearch /etc/elasticsearch -R && \
   chown elasticsearch:elasticsearch /etc/default/elasticsearch && \
   cd arches_rdm_example_project && yarn install
 
+RUN openssl ecparam -out /etc/ssl/private/nginx-selfsigned.key -name prime256v1 -genkey && openssl req -x509 -nodes -days 365 -newkey rsa:2048 -key /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost"
+
 RUN ESPASSWORD='$(echo "y" | sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic | grep "New value:" | cut -d " " -f 3)' && export ES_JAVA_OPTS="-Xmx1g" && \
   sed -i 's/xpack.security.enabled: true/xpack.security.enabled: false/g' /etc/elasticsearch/elasticsearch.yml && \
   sed -i 's/xpack.security.enrollment.enabled: true/xpack.security.enrollment.enabled: false/g' /etc/elasticsearch/elasticsearch.yml && \
@@ -48,6 +50,8 @@ ENV WEB_ROOT=/web_root
 ENV APP_ROOT=${WEB_ROOT}/arches_rdm_example_project
 COPY --from=base /var/www/media /var/www/media
 COPY --from=base /web_root/ENV /web_root/ENV
+COPY --from=base /etc/ssl/private/nginx-selfsigned.key /etc/ssl/private/nginx-selfsigned.key
+COPY --from=base /etc/ssl/certs/nginx-selfsigned.crt /etc/ssl/certs/nginx-selfsigned.crt
 
 RUN chgrp www-data /var/www/media -R
 RUN apt-get update && apt-get install -y make software-properties-common && apt-get install -y ca-certificates curl gnupg nginx vim && apt-add-repository ppa:deadsnakes/ppa && apt-get update
@@ -84,7 +88,10 @@ RUN chmod -R 700 ${WEB_ROOT}/entrypoint.sh &&\
 
 COPY arches_rdm_example_project/docker/production/default.conf /etc/nginx/sites-available/default
 COPY arches_rdm_example_project/ ${WEB_ROOT}/arches_rdm_example_project
+
 WORKDIR ${APP_ROOT}
 
 ENTRYPOINT ["../entrypoint.sh"]
 CMD ["run_arches_production"]
+
+EXPOSE 443
