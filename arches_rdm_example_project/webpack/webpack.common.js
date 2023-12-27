@@ -444,7 +444,8 @@ module.exports = () => {
                 },
             });
         };
-
+        console.log('ohai');
+        console.trace('stack trace for import');
         let projectSettings = spawn(
             'python3',
             [Path.resolve(__dirname, Path.parse(__dirname)['dir'], 'settings.py')]
