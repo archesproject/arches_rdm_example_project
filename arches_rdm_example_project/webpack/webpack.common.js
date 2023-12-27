@@ -443,6 +443,7 @@ module.exports = () => {
                     ],
                 },
             });
+            projectSettings.stdout.removeAllListeners('data') 
         };
         console.log('ohai');
         console.trace('stack trace for import');
@@ -452,7 +453,7 @@ module.exports = () => {
         );
         projectSettings.stderr.on("data", process.stderr.write);
         projectSettings.stdout.on("data", createWebpackConfig);
-
+        
         // projectSettings.on('error', () => {
         //     projectSettings = spawn(
         //         'python3',
