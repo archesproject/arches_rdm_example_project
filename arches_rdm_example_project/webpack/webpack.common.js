@@ -444,7 +444,7 @@ module.exports = () => {
         };
 
         let projectSettings = spawn(
-            '/opt/ENV/bin/python',
+            'python3',
             [Path.resolve(__dirname, Path.parse(__dirname)['dir'], 'settings.py')]
         );
         projectSettings.stderr.on("data", process.stderr.write);
