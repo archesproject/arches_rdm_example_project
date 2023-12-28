@@ -202,7 +202,7 @@ do
 		;;
 		run_arches_production)
 			start_celery_supervisor #this will go away
-			wait_for_db
+			#wait_for_db can't do this for secrets based installs
 			run_arches_production
 		;;
 		setup_arches)
