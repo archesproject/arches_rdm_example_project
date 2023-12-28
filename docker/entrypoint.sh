@@ -151,7 +151,7 @@ run_gunicorn() {
 	echo ""
 	cd ${APP_FOLDER}
     echo "Running Django"
-	exec /bin/bash -c "source ../ENV/bin/activate && (/etc/init.d/nginx start&) && gunicorn arches_rdm_example_project.wsgi && pip install debugpy -t /tmp"
+	exec /bin/bash -c "source ../ENV/bin/activate && (/etc/init.d/nginx start&) && gunicorn arches_rdm_example_project.wsgi"
 }
 
 #### Main commands

@@ -66,7 +66,6 @@ RUN set -ex \
   mime-support \
   libgdal-dev \
   python3.11 \ 
-  python3.11-distutils \
   python3.11-venv \
   postgresql-client-14 \
   dos2unix \
