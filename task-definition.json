@@ -48,7 +48,9 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-stream-prefix": "rdm-arches"
+                    "awslogs-stream-prefix": "arches",
+                    "awslogs-group": "rdm-base-infrastructure-rdmcontainerloggroupC4ED3A19-y6M1wpjYa5gh",
+                    "awslogs-region": "us-west-1"
                 }
             }
         }
