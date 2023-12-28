@@ -77,9 +77,6 @@ RUN set -ex \
   && apt-get install -y $RUN_DEPS --no-install-recommends
 
 
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py \
-  && rm -rf /root/.cache/pip/* 
-
 COPY arches-rdm/ ${WEB_ROOT}/arches-rdm
 
 COPY arches_rdm_example_project/docker/entrypoint.sh ${WEB_ROOT}/entrypoint.sh
