@@ -3,12 +3,6 @@
         "FARGATE"
     ],
     "inferenceAccelerators": [],
-    "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-            "awslogs-stream-prefix": "rdm-arches"
-        }
-    },
     "containerDefinitions": [
         {
             "name": "arches",
@@ -20,7 +14,43 @@
                     "containerPort": "443",
                     "protocol": "tcp"
                 }
-            ]
+            ],
+            "environment": [
+                {
+                    "name": "ES_SECRET_ID",
+                    "value": "prod/rdm/elastic"
+                },
+                {
+                    "name": "DB_SECRET_ID",
+                    "value": "archesDbSecretC996653C-qRg6QQ5XOMB9"
+                },
+                {
+                    "name": "PUBLIC_SERVER_ADDRESS",
+                    "value": "https://rdm.dev.fargeo.com"
+                },
+                {
+                    "name": "SECRETS_MODE",
+                    "value": "AWS"
+                },
+                {
+                    "name": "S3FILEOVERWRITE",
+                    "value": "False"
+                },
+                {
+                    "name": "STORAGEBACKEND",
+                    "value": "storages.backends.s3.S3Storage"
+                },
+                {
+                    "name": "S3BUCKETNAME",
+                    "value": "fargeo-1-rdm-media-files"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-stream-prefix": "rdm-arches"
+                }
+            },
         }
     ],
     "volumes": [],
@@ -30,35 +60,5 @@
     "executionRoleArn": "arn:aws:iam::889276910795:role/arches-execution-role",
     "family": "ecs-devops-sandbox-task-definition",
     "taskRoleArn": "arn:aws:iam::889276910795:role/arches-task-role",
-    "placementConstraints": [],
-    "environment": [
-        {
-            "name": "ES_SECRET_ID",
-            "value": "prod/rdm/elastic"
-        },
-        {
-            "name": "DB_SECRET_ID",
-            "value": "archesDbSecretC996653C-qRg6QQ5XOMB9"
-        },
-        {
-            "name": "PUBLIC_SERVER_ADDRESS",
-            "value": "https://rdm.dev.fargeo.com"
-        },
-        {
-            "name": "SECRETS_MODE",
-            "value": "AWS"
-        },
-        {
-            "name": "S3FILEOVERWRITE",
-            "value": "False"
-        },
-        {
-            "name": "STORAGEBACKEND",
-            "value": "storages.backends.s3.S3Storage"
-        },
-        {
-            "name": "S3BUCKETNAME",
-            "value": "fargeo-1-rdm-media-files"
-        }
-    ]
+    "placementConstraints": []
 }
