@@ -66,7 +66,8 @@ if STORAGE_BACKEND == "storages.backends.s3.S3Storage":
 
     STORAGE_OPTIONS = {
         "bucket_name": get_env_variable("S3BUCKETNAME"),
-        "file_overwrite": get_optional_env_variable("S3FILEOVERWRITE", True),
+        "file_overwrite": get_optional_env_variable("S3FILEOVERWRITE", "True")
+        == "True",
         "signature_version": get_optional_env_variable("S3SIGNATUREVERSION", "s3v4"),
         "region": get_optional_env_variable("S3REGION", "us-west-1"),
         "max_memory_size": get_optional_env_variable(
