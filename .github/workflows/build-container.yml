@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - "test/**"
+  repository_dispatch:
+    type:
+      - deploy_project
 jobs:
   build:
     name: Build Docker Image and Push
