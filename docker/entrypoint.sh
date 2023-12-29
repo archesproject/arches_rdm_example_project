@@ -126,7 +126,7 @@ run_setup_db() {
 	../ENV/bin/python manage.py setup_db --force
 }
 
-reset_production_db() {
+reset_database() {
 	echo ""
 	echo "----- RESETTING DATABASE -----"
 	echo ""
@@ -223,8 +223,8 @@ do
 			wait_for_db
 			run_tests
 		;;
-		reset_production_db)
-			reset_production_db
+		reset_database)
+			reset_database
 		;;
 		run_migrations)
 			wait_for_db

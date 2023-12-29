@@ -55,9 +55,9 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Run Task on Amazon ECS
-        uses: muya/amazon-ecs-run-task@v1
+        uses: smitp/amazon-ecs-run-task@v1
         with:
-          task-definition: task-definition-reset-production.json
+          task-definition: arches_rdm_example_project/task-definition-reset-production.json
           cluster: rdm-cluster
           count: 1
           started-by: github-actions-${{ github.actor }}
