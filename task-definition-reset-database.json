@@ -22,7 +22,7 @@
                 ]
             },
             "command": [
-                "reset_production_db"
+                "reset_database"
             ],
             "environment": [
                 {
@@ -44,6 +44,10 @@
                 {
                     "name": "S3FILEOVERWRITE",
                     "value": "False"
+                },
+                {
+                    "name": "ARCHES_PROJECT",
+                    "value": "arches_rdm_example_project"
                 },
                 {
                     "name": "STORAGEBACKEND",
