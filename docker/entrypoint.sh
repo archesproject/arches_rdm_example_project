@@ -126,6 +126,15 @@ run_setup_db() {
 	../ENV/bin/python manage.py setup_db --force
 }
 
+reset_production_db() {
+	echo ""
+	echo "----- RESETTING DATABASE -----"
+	echo ""
+	cd ${APP_FOLDER}
+	/web_root/ENV/bin/python manage.py setup_db --force
+	/web_root/ENV/bin/python manage.py packages -o load_package -a arches_rdm -db -dev -y
+}
+
 run_load_package() {
 	echo ""
 	echo "----- *** LOADING PACKAGE: ${ARCHES_PROJECT} *** -----"
@@ -213,6 +222,9 @@ do
 		run_tests)
 			wait_for_db
 			run_tests
+		;;
+		reset_production_db)
+			reset_production_db
 		;;
 		run_migrations)
 			wait_for_db
