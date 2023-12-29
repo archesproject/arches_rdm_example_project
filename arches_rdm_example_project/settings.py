@@ -103,7 +103,7 @@ if SECRETS_MODE == "AWS":
             client.get_secret_value(SecretId=DB_SECRET_ID)["SecretString"]
         )
         DB_NAME = APP_NAME
-        DB_USER = db_secret["user"]
+        DB_USER = db_secret["username"]
         DB_PASSWORD = db_secret["password"]
         DB_HOST = db_secret["host"]
         DB_PORT = db_secret["port"]
