@@ -131,8 +131,9 @@ reset_database() {
 	echo "----- RESETTING DATABASE -----"
 	echo ""
 	cd ${APP_FOLDER}
-	/web_root/ENV/bin/python manage.py setup_db --force
-	/web_root/ENV/bin/python manage.py packages -o load_package -a arches_rdm -db -dev -y
+	echo ${APP_FOLDER}
+	../ENV/bin/python manage.py setup_db --force
+	../ENV/bin/python manage.py packages -o load_package -a arches_rdm -db -dev -y
 }
 
 run_load_package() {
