@@ -33,6 +33,10 @@
                     "value": "AWS"
                 },
                 {
+                    "name": "ARCHES_PROJECT",
+                    "value": "arches_rdm_example_project"
+                },
+                {
                     "name": "S3FILEOVERWRITE",
                     "value": "False"
                 },

@@ -58,7 +58,7 @@ jobs:
         id: task-def-run-reset
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: arches_rdm_example_project/task-definition-reset-production.json
+          task-definition: arches_rdm_example_project/task-definition-reset-database.json
           container-name: arches
           image: ${{ steps.build-image.outputs.image }}
 
