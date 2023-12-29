@@ -11,7 +11,7 @@ WORKDIR ${WEB_ROOT}
 COPY arches_rdm_example_project/arches_rdm_example_project/install/requirements.txt project-requirements.txt
 COPY arches-rdm/ ${WEB_ROOT}/arches-rdm
 
-RUN apt-get install nginx -y && source ENV/bin/activate && pip install -r project-requirements.txt && rm project-requirements.txt && pip install gunicorn botocore boto3 django-storages && mkdir arches_rdm_example_project && cd arches-rdm && pip install .
+RUN apt-get install nginx -y && source ENV/bin/activate && pip install -r project-requirements.txt && rm project-requirements.txt && pip install gunicorn botocore boto3 django-storages psutil && mkdir arches_rdm_example_project && cd arches-rdm && pip install .
 
 COPY arches_rdm_example_project/docker/production/default.conf /etc/nginx/sites-available/default
 
