@@ -70,7 +70,7 @@ jobs:
           cluster: rdm-cluster
 
       - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+        id: run-reset-task
         run: |
           # Build a docker container and
           # push it to ECR so that it can
