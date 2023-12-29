@@ -54,14 +54,28 @@ jobs:
           container-name: arches
           image: ${{ steps.build-image.outputs.image }}
 
-      - name: Run Task on Amazon ECS
-        uses: smitp/amazon-ecs-run-task@v1
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def-run-reset
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: arches_rdm_example_project/task-definition-reset-production.json
+          container-name: arches
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Reset Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        id: task-def-deploy-reset
+        with:
+          task-definition: ${{ steps.task-def-run-reset.outputs.task-definition }}
           cluster: rdm-cluster
-          count: 1
-          started-by: github-actions-${{ github.actor }}
-          wait-for-finish: true
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          aws ecs run-task --cluster rdm-cluster --task-definition ${{ steps.task-def-deploy-reset.outputs.task-definition-arn }} --count 1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=[subnet-0d66c5e9e3c174519,subnet-0ad21fa3dbc479860],securityGroups=[sg-04ca486cc6239259b]}}"
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
