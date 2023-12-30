@@ -46,7 +46,7 @@ WEBPACK_DEVELOPMENT_SERVER_PORT = int(
     get_optional_env_variable("WEBPACKDEVELOPMENTSERVERPORT", "8022")
 )
 ES_PROTOCOL = get_optional_env_variable("ESPROTOCOL", "http")
-ES_VALIDATE_CERT = get_optional_env_variable("ESVALIDATE", "True") != "False"
+ES_VALIDATE_CERT = get_optional_env_variable("ESVALIDATE", "True") == "True"
 DEBUG = bool(get_optional_env_variable("DJANGO_DEBUG", False))
 KIBANA_URL = get_optional_env_variable("KIBANA_URL", "http://localhost:5601/")
 KIBANA_CONFIG_BASEPATH = get_optional_env_variable("KIBANACONFIGBASEPATH", "kibana")
@@ -192,7 +192,11 @@ DEBUG = True
 ROOT_URLCONF = "arches_rdm_example_project.urls"
 # Modify this line as needed for your project to connect to elasticsearch with a password that you generate
 ELASTICSEARCH_HOSTS = [{"scheme": ES_PROTOCOL, "host": ES_HOST, "port": ES_PORT}]
-ELASTICSEARCH_CONNECTION_OPTIONS = {"timeout": 30, "basic_auth": (ES_USER, ES_PASSWORD)}
+ELASTICSEARCH_CONNECTION_OPTIONS = {
+    "timeout": 30,
+    "verify_certs": ES_VALIDATE_CERT,
+    "basic_auth": (ES_USER, ES_PASSWORD),
+}
 # a prefix to append to all elasticsearch indexes, note: must be lower case
 ELASTICSEARCH_PREFIX = APP_NAME
 
