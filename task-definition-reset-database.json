@@ -47,7 +47,7 @@
                 },
                 {
                     "name": "ESPROTOCOL",
-                    "value": "HTTPS"
+                    "value": "https"
                 },
                 {
                     "name": "ARCHES_PROJECT",
