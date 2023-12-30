@@ -38,7 +38,7 @@
                 },
                 {
                     "name": "ESPROTOCOL",
-                    "value": "HTTPS"
+                    "value": "https"
                 },
                 {
                     "name": "S3FILEOVERWRITE",
