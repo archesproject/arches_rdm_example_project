@@ -131,7 +131,11 @@ reset_database() {
 	echo "----- RESETTING DATABASE -----"
 	echo ""
 	cd ${APP_ROOT}
-	../ENV/bin/python manage.py setup_db --force
+	pwd && ../ENV/bin/python --version
+	(test $(echo "SELECT FROM pg_database WHERE datname = 'template_postgis'" | ../ENV/bin/python manage.py dbshell | grep -c "1 row") = 1 || \
+	(echo "CREATE DATABASE template_postgis" | ../ENV/bin/python manage.py dbshell && \
+	echo "CREATE EXTENSION postgis" | ../ENV/bin/python manage.py dbshell))
+	../ENV/bin/python manage.py setup_db --force 
 	../ENV/bin/python manage.py packages -o load_package -a arches_rdm -db -dev -y
 }
 
