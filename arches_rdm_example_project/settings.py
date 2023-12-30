@@ -215,7 +215,22 @@ DATABASES = {
         "TEST": {"CHARSET": None, "COLLATION": None, "MIRROR": None, "NAME": None},
         "TIME_ZONE": None,
         "USER": DB_USER,
-    }
+    },
+    "postgres": {
+        "ATOMIC_REQUESTS": False,
+        "AUTOCOMMIT": True,
+        "CONN_MAX_AGE": 0,
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "HOST": DB_HOST,
+        "NAME": "postgres",
+        "OPTIONS": {},
+        "PASSWORD": DB_PASSWORD,
+        "PORT": DB_PORT,
+        "POSTGIS_TEMPLATE": "template_postgis",
+        "TEST": {"CHARSET": None, "COLLATION": None, "MIRROR": None, "NAME": None},
+        "TIME_ZONE": None,
+        "USER": DB_USER,
+    },
 }
 
 
