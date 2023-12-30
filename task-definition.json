@@ -37,6 +37,10 @@
                     "value": "arches_rdm_example_project"
                 },
                 {
+                    "name": "ESPROTOCOL",
+                    "value": "HTTPS"
+                },
+                {
                     "name": "S3FILEOVERWRITE",
                     "value": "False"
                 },
