@@ -130,8 +130,7 @@ reset_database() {
 	echo ""
 	echo "----- RESETTING DATABASE -----"
 	echo ""
-	cd ${APP_FOLDER}
-	echo ${APP_FOLDER}
+	cd ${APP_ROOT}
 	../ENV/bin/python manage.py setup_db --force
 	../ENV/bin/python manage.py packages -o load_package -a arches_rdm -db -dev -y
 }
@@ -149,7 +148,7 @@ run_django_server() {
 	echo ""
 	echo "----- *** RUNNING DJANGO DEVELOPMENT SERVER *** -----"
 	echo ""
-	cd ${APP_FOLDER}
+	cd ${APP_ROOT}
     echo "Running Django"
 	exec /bin/bash -c "source ../ENV/bin/activate && pip install debugpy -t /tmp && python -Wdefault /tmp/debugpy --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:${DJANGO_PORT}"
 }
@@ -159,9 +158,9 @@ run_gunicorn() {
 	echo ""
 	echo "----- *** RUNNING DJANGO PRODUCTION SERVER *** -----"
 	echo ""
-	cd ${APP_FOLDER}
+	cd ${APP_ROOT}
     echo "Running Django"
-	exec /bin/bash -c "source /web_root/ENV/bin/activate && (/etc/init.d/nginx start&) && cd /web_root/arches_rdm_example_project && gunicorn arches_rdm_example_project.wsgi"
+	exec /bin/bash -c "source ../ENV/bin/activate && (/etc/init.d/nginx start&) && gunicorn arches_rdm_example_project.wsgi"
 }
 
 #### Main commands
