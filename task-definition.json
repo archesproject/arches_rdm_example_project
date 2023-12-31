@@ -33,6 +33,14 @@
                     "value": "AWS"
                 },
                 {
+                    "name": "ALLOWED_HOSTS",
+                    "value": "rdm.dev.fargeo.com"
+                },
+                {
+                    "name": "TRUSTEDORIGINS",
+                    "value": "https://rdm.dev.fargeo.com"
+                },
+                {
                     "name": "ESVALIDATE",
                     "value": "False"
                 },

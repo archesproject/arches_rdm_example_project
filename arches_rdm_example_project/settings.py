@@ -299,7 +299,9 @@ SYSTEM_SETTINGS_LOCAL_PATH = os.path.join(
     APP_ROOT, "system_settings", "System_Settings.json"
 )
 WSGI_APPLICATION = "arches_rdm_example_project.wsgi.application"
-
+CSRF_TRUSTED_ORIGINS = get_optional_env_variable(
+    "TRUSTEDORIGINS", "https://localhost:8029"
+).split()
 # URL that handles the media served from MEDIA_ROOT, used for managing stored files.
 # It must end in a slash if set to a non-empty value.
 MEDIA_URL = "/files/"

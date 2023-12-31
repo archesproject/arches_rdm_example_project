@@ -49,6 +49,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV WEB_ROOT=/web_root
 ENV APP_ROOT=${WEB_ROOT}/arches_rdm_example_project
 COPY --from=base /var/www/media /var/www/media
+COPY --from=base /web_root/arches_rdm_example_project/arches_rdm_example_project/webpack/webpack-stats.json /web_root/arches_rdm_example_project/arches_rdm_example_project/webpack/webpack-stats.json
 COPY --from=base /web_root/ENV /web_root/ENV
 COPY --from=base /etc/ssl/private/nginx-selfsigned.key /etc/ssl/private/nginx-selfsigned.key
 COPY --from=base /etc/ssl/certs/nginx-selfsigned.crt /etc/ssl/certs/nginx-selfsigned.crt
