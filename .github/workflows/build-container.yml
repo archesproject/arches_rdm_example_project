@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "test/**"
+      - "deploy"
   repository_dispatch:
     type:
       - deploy_project
