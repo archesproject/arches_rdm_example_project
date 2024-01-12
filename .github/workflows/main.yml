@@ -50,13 +50,21 @@ jobs:
         with:
           elasticsearch-version: 8
 
-      - name: Check for ESLint issues
+      - name: Check for TypeScript and ESLint issues
         run: |
           echo "Removing yarn.lock due to yarn v1 package resolution issues"
           echo "https://github.com/iarna/wide-align/issues/63"
           rm yarn.lock
-          yarn && yarn eslint:check
+          yarn && yarn eslint:check && yarn typescript:check
 
       - name: Check for missing migrations
         run: |
           python manage.py makemigrations --check
+
+      - name: Run Project unit tests
+        run: |
+          python -W default::DeprecationWarning -m coverage run manage.py test tests --pattern="*.py" --settings="tests.test_settings"
+
+      - name: Report coverage
+        run: |
+          coverage report
