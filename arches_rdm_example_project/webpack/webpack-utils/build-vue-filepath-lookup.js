@@ -23,13 +23,13 @@ const buildVueFilePathLookup = function(path, outerAcc, vueDirectoryPath) {
             const parsedPath = Path.parse(subPath);
             const filename = parsedPath['dir'] ? Path.join(parsedPath['dir'], parsedPath['base']) : parsedPath['base'];
 
-            if (filename.includes('.DS_Store')) {
+            if (!filename.includes('.vue')) {
                 return acc;
             }
             else {
                 return { 
                     ...acc, 
-                    [filename.replace(/\\/g, '/')]: Path.resolve(__dirname, Path.join(outerPath, subPath))
+                    [Path.join('vue', filename).replace(/\\/g, '/')]: Path.resolve(__dirname, Path.join(outerPath, subPath))
                 };
             }
         }
