@@ -13,7 +13,7 @@
 
     },
     "devDependencies": {
-        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#cbyrd-7-add-typescript-and-vue-linting",
+        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/7.6.x",
         "vue3-gettext": "^3.0.0-beta.4"
     },
     "dependencies": {
