@@ -1,2 +1,2 @@
 arches~=7.5.0a1
-arches_rdm~=0.0.1
+arches_rdm @ git+https://github.com/archesproject/arches-rdm@main
