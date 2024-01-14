@@ -42,7 +42,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install .
           pip install -r arches_rdm_example_project/install/requirements.txt
-          pip install -r arches_rdm_example_project/install/requirements_dev.txt
+        #   pip install -r arches_rdm_example_project/install/requirements_dev.txt
           echo Python packages installed
 
 
