@@ -14,11 +14,10 @@
         "start": "./media/node_modules/.bin/cross-env NODE_PATH=./media/node_modules NODE_OPTIONS=--max-old-space-size=2048 ./media/node_modules/.bin/webpack serve --config webpack/webpack.config.dev.js"
     },
     "devDependencies": {
-        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/7.6.x",
-        "vue3-gettext": "^3.0.0-beta.4"
+        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/7.6.x"
     },
     "dependencies": {
-        "arches": "archesproject/arches#dev/7.6.x",
+        "arches": "archesproject/arches#10516-cbyrd-adds-vue-typescript-support-and-linter",
         "arches_rdm": "archesproject/arches-rdm"
     },
     "nodeModulesPaths": {}
