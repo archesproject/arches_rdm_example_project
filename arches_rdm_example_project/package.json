@@ -20,5 +20,8 @@
         "arches": "archesproject/arches#10516-cbyrd-adds-vue-typescript-support-and-linter",
         "arches_rdm": "archesproject/arches-rdm"
     },
-    "nodeModulesPaths": {}
+    "nodeModulesPaths": {},
+    "resolutions": {
+        "node-gyp": "^10.0.0"
+    }
 }
