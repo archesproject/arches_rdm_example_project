@@ -33,6 +33,7 @@ jobs:
 
       - name: Webpack frontend files
         run: |
+          cd arches_rdm_example_project
           echo "Removing yarn.lock due to yarn v1 package resolution issues"
           echo "https://github.com/iarna/wide-align/issues/63"
           rm yarn.lock
