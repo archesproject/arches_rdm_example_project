@@ -8,6 +8,7 @@ import sys
 import arches
 import inspect
 import semantic_version
+from datetime import datetime, timedelta
 from django.utils.translation import gettext_lazy as _
 
 try:
@@ -41,7 +42,7 @@ FILENAME_GENERATOR = "arches.app.utils.storage_filename_generator.generate_filen
 UPLOADED_FILES_DIR = "uploadedfiles"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i=u^q2afp%qq&c4-ck9%&7xk-pk#m_y6#a+1j^mxj%vw@tyy_i'
+SECRET_KEY = 'i@15x0vz5z=hev)8bm3ay3353q$+3^%!kb(u)c9v3omqu#o*7*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -224,6 +225,10 @@ LOGGING = {
     }
 }
 
+# Rate limit for authentication views
+# See options (including None or python callables):
+# https://django-ratelimit.readthedocs.io/en/stable/rates.html#rates-chapter
+RATE_LIMIT = "5/m"
 
 # Sets default max upload size to 15MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
@@ -255,7 +260,11 @@ DATE_IMPORT_EXPORT_FORMAT = "%Y-%m-%d" # Custom date format for dates imported f
 EXPORT_DATA_FIELDS_IN_CARD_ORDER = False
 
 #Identify the usernames and duration (seconds) for which you want to cache the time wheel
-CACHE_BY_USER = {'anonymous': 3600 * 24}
+CACHE_BY_USER = {
+    "default": 3600 * 24, #24hrs
+    "anonymous": 3600 * 24 #24hrs
+    }
+
 TILE_CACHE_TIMEOUT = 600 #seconds
 CLUSTER_DISTANCE_MAX = 5000 #meters
 GRAPH_MODEL_CACHE_TIMEOUT = None
@@ -343,6 +352,12 @@ RESTRICT_MEDIA_ACCESS = False
 # value and is not signed in with a user account then the request will not be allowed.
 RESTRICT_CELERY_EXPORT_FOR_ANONYMOUS_USER = False
 
+# Dictionary containing any additional context items for customising email templates
+EXTRA_EMAIL_CONTEXT = {
+    "salutation": _("Hi"),
+    "expiration":(datetime.now() + timedelta(seconds=CELERY_SEARCH_EXPORT_EXPIRES)).strftime("%A, %d %B %Y")
+}
+
 # see https://docs.djangoproject.com/en/1.9/topics/i18n/translation/#how-django-discovers-language-preference
 # to see how LocaleMiddleware tries to determine the user's language preference
 # (make sure to check your accept headers as they will override the LANGUAGE_CODE setting!)
@@ -380,8 +395,6 @@ LANGUAGES = [
 # override this to permenantly display/hide the language switcher
 SHOW_LANGUAGE_SWITCH = len(LANGUAGES) > 1
 
-DOCKER = False
-
 try:
     from .package_settings import *
 except ImportError:
@@ -397,15 +410,6 @@ except ImportError as e:
         from settings_local import *
     except ImportError as e:
         pass
-
-if DOCKER:
-    try:
-        from .settings_docker import *
-    except ImportError:
-        try:
-            from settings_docker import *
-        except ImportError as e:
-            pass
 
 # returns an output that can be read by NODEJS
 if __name__ == "__main__":

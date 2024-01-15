@@ -1,6 +1,5 @@
 *.pyc
 *.log
-*.DS_Store
 arches_rdm_example_project/logs
 arches_rdm_example_project/export_deliverables
 arches_rdm_example_project/cantaloupe/*
@@ -13,4 +12,6 @@ arches_rdm_example_project/settings_local.py
 arches_rdm_example_project/webpack/webpack-stats.json
 arches_rdm_example_project/webpack/webpack-user-config.js
 .vscode/
+*.egg-info
+.DS_STORE
 CACHE

@@ -13,7 +13,7 @@ jobs:
         image: postgis/postgis:13-3.0
         env:
           POSTGRES_PASSWORD: postgis
-          POSTGRES_DB: arches_rdm_example_project
+          POSTGRES_DB: project
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -33,7 +33,7 @@ jobs:
 
       - name: Webpack frontend files
         run: |
-          cd arches_rdm_example_project
+          cd */
           echo "Removing yarn.lock due to yarn v1 package resolution issues"
           echo "https://github.com/iarna/wide-align/issues/63"
           rm yarn.lock
