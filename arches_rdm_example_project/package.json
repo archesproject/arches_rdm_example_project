@@ -17,7 +17,7 @@
         "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/7.6.x"
     },
     "dependencies": {
-        "arches": "archesproject/arches#10516-cbyrd-adds-vue-typescript-support-and-linter",
+        "arches": "archesproject/arches#dev/7.6.x",
         "arches_rdm": "archesproject/arches-rdm"
     },
     "nodeModulesPaths": {},
