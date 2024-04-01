@@ -135,7 +135,7 @@ INSTALLED_APPS = (
     "arches_rdm",
 )
 
-ARCHES_APPLICATIONS = ("arches_rdm",)
+ARCHES_APPLICATIONS = ()
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
