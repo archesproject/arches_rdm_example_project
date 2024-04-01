@@ -132,7 +132,6 @@ INSTALLED_APPS = (
     "compressor",
     # "silk",
     "arches_rdm_example_project",
-    "arches_rdm",
 )
 
 ARCHES_APPLICATIONS = ()
