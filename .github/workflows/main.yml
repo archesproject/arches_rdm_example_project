@@ -56,6 +56,7 @@ jobs:
           cd arches_rdm_example_project
           rm yarn.lock
           yarn && yarn build_test
+          cd ..
 
       - name: Check for missing migrations
         run: |
