@@ -1,0 +1,15 @@
+[run]
+source =
+    arches_rdm_example_project/
+
+[report]
+omit =
+    */python?.?/*
+    */migrations/*
+    */tests/*
+    */celery.py
+    */settings*.py
+    */wsgi.py
+    */urls.py
+    
+show_missing = true
