@@ -55,7 +55,9 @@ jobs:
           git checkout main
           
           main_coverage=$(coverage report -m --skip-covered)
+          echo "FOOFOOFOO $main_coverage"
           baseline_coverage=$(echo "$main_coverage" | grep TOTAL | awk '{print $4}' | sed 's/%//')
+          echo "BARBARBAR $baseline_coverage"
       
           echo "$baseline_coverage" > .coverage_baseline
   
