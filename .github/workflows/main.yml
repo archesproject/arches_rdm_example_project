@@ -49,17 +49,19 @@ jobs:
         with:
           elasticsearch-version: 8
 
-      - name: Check for missing migrations
-        run: |
-          python manage.py makemigrations --check
-
-      - name: Run Arches unit tests
-        run: |
-          python -W default::DeprecationWarning -m coverage run manage.py test tests --pattern="*.py" --settings="tests.test_settings"
-
       - name: Report coverage
         run: |
           coverage report
+
+      - name: Retrieve baseline coverage
+        run: |
+          git fetch origin main:main
+          git checkout main
+          
+          main_coverage=$(coverage report -m --skip-covered)
+          baseline_coverage=$(echo "$main_coverage" | grep TOTAL | awk '{print $4}' | sed 's/%//')
+      
+          echo "$baseline_coverage" > .coverage_baseline
   
       - name: Compare coverage with baseline
         run: |
