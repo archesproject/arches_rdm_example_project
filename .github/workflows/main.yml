@@ -54,9 +54,9 @@ jobs:
           git fetch origin main:main
           git checkout main
           
-          coverage report -m --skip-covered > main_coverage.txt
-          baseline_coverage=$(grep TOTAL main_coverage.txt | awk '{print $4}' | sed 's/%//')
-
+          baseline_coverage=$(coverage report -m | grep TOTAL | awk '{print $4}' | sed 's/%//')
+          echo "BARBARBAR $baseline_coverage"
+      
           echo "$baseline_coverage" > .coverage_baseline
   
       - name: Compare coverage with baseline
