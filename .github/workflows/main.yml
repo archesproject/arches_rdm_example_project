@@ -64,8 +64,8 @@ jobs:
       - name: Show contents of .coverage file
         run: |
           git fetch origin main:main
-          coverage_file_contents=$(git show main:.coverage)
-          echo "$coverage_file_contents" > .coverage_contents
+          git show main:.coverage > .coverage
+          coverage report -i > .coverage_contents
           cat .coverage_contents
 
       - name: Retrieve baseline coverage
