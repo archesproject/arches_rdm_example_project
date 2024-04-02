@@ -56,17 +56,9 @@ jobs:
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
-          git checkout main
-          
-          baseline_coverage=$(grep -o '"totals": {[^}]*' coverage.json | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
+          baseline_coverage=$(git show main:coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
           echo "BARBARBAR $baseline_coverage"
-      
           echo "$baseline_coverage" > .coverage_baseline
-
-      - name: Checkout back into the branch being tested
-        if: github.ref != 'refs/heads/main'
-        run: |
-          git checkout ${{ github.ref }}
 
       - name: Run unit tests
         run: |
