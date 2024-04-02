@@ -15,7 +15,6 @@ class TestSampleIndex(ArchesTestCase):
 
     def test_get_documents_to_index(self):
         pass
-    
         # sample_index = SampleIndex(index_name="Sample Index")
         
         # mock_resourceinstance = Mock(graph_id="test_graph_id")
