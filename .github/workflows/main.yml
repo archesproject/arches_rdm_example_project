@@ -61,17 +61,11 @@ jobs:
         run: |
           coverage report
 
-      - name: Show contents of .coverage file
-        run: |
-          git fetch origin main:main
-          coverage_file_contents=$(coverage report -i)
-          echo "$coverage_file_contents" > .coverage_contents
-          cat .coverage_contents
-
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
-          baseline_coverage=$(git show main:.coverage | coverage report -m | sed -n '/TOTAL/ s/.*\s\([0-9.]*%\).*/\1/p' | sed 's/%//')
+          git checkout main
+          baseline_coverage=$(coverage report -m | sed -n '/TOTAL/ s/.*\s\([0-9.]*%\).*/\1/p' | sed 's/%//')
           echo "Baseline Coverage: $baseline_coverage"
           echo "$baseline_coverage" > .coverage_baseline
   
