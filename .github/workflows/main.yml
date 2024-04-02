@@ -88,5 +88,5 @@ jobs:
 
             git commit -m "automatically update coverage"
 
-            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+            git push -f origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
