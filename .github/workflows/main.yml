@@ -68,6 +68,7 @@ jobs:
           echo "$baseline_coverage" > .coverage_baseline
   
       - name: Compare coverage with baseline
+        if: github.event_name == 'pull_request'
         run: |
           current_coverage=$(coverage report -m | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
@@ -86,5 +87,5 @@ jobs:
             git add .coverage
 
             git commit -m "automatically update coverage"
-            git push origin HEAD:${{ github.ref }}
+            git push origin HEAD:${{ github.event.pull_request.base.ref }}
           fi
