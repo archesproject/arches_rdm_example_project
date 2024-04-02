@@ -54,7 +54,7 @@ jobs:
           git fetch origin main:main
           git checkout main
           
-          baseline_coverage=$(coverage report -m | grep TOTAL | awk '{print $4}' | sed 's/%//')
+          baseline_coverage=$(grep -o '"totals": {[^}]*' coverage.json | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
           echo "BARBARBAR $baseline_coverage"
       
           echo "$baseline_coverage" > .coverage_baseline
