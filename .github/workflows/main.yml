@@ -49,10 +49,6 @@ jobs:
         with:
           elasticsearch-version: 8
 
-      - name: Report coverage
-        run: |
-          coverage report
-
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
