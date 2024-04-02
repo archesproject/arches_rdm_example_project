@@ -65,7 +65,6 @@ jobs:
         run: |
           git fetch origin main:main
           baseline_coverage=$(git show main:coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
-          echo "BARBARBAR $baseline_coverage"
           echo "$baseline_coverage" > .coverage_baseline
   
       - name: Compare coverage with baseline
@@ -73,8 +72,13 @@ jobs:
           current_coverage=$(coverage report -m | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           baseline_coverage=$(printf "%.0f" "$baseline_coverage")
-          echo "FOOFOOFOO from $baseline_coverage% to $current_coverage%"
           if [[ "$current_coverage" -lt "$baseline_coverage" ]]; then
             echo "Coverage decreased from $baseline_coverage% to $current_coverage%"
             exit 1
+          else
+            echo "Coverage didn't decrease. Committing new coverage.json."
+            coverage json
+            git add coverage.json
+            git commit -m "Update coverage.json"
+            git push origin ${{ github.head_ref }}
           fi
