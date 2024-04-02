@@ -49,6 +49,10 @@ jobs:
         with:
           elasticsearch-version: 8
 
+      - name: Check for missing migrations
+        run: |
+          python manage.py makemigrations --check
+
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
@@ -58,6 +62,19 @@ jobs:
           echo "BARBARBAR $baseline_coverage"
       
           echo "$baseline_coverage" > .coverage_baseline
+
+      - name: Checkout back into the branch being tested
+        if: github.ref != 'refs/heads/main'
+        run: |
+          git checkout ${{ github.ref }}
+
+      - name: Run unit tests
+        run: |
+          python -W default::DeprecationWarning -m coverage run manage.py test tests --pattern="*.py" --settings="tests.test_settings"
+
+      - name: Report coverage
+        run: |
+          coverage report
   
       - name: Compare coverage with baseline
         run: |
