@@ -53,13 +53,6 @@ jobs:
         run: |
           python manage.py makemigrations --check
 
-      - name: Retrieve baseline coverage
-        run: |
-          git fetch origin main:main
-          baseline_coverage=$(git show main:coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
-          echo "BARBARBAR $baseline_coverage"
-          echo "$baseline_coverage" > .coverage_baseline
-
       - name: Run unit tests
         run: |
           python -W default::DeprecationWarning -m coverage run manage.py test tests --pattern="*.py" --settings="tests.test_settings"
@@ -67,13 +60,21 @@ jobs:
       - name: Report coverage
         run: |
           coverage report
+
+      - name: Retrieve baseline coverage
+        run: |
+          git fetch origin main:main
+          baseline_coverage=$(git show main:coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
+          echo "BARBARBAR $baseline_coverage"
+          echo "$baseline_coverage" > .coverage_baseline
   
       - name: Compare coverage with baseline
         run: |
-          current_coverage=$(coverage report -m | grep TOTAL | awk '{print $4}' | sed 's/%//')
+          current_coverage=$(coverage report -m | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
+          baseline_coverage=$(printf "%.0f" "$baseline_coverage")
           echo "FOOFOOFOO from $baseline_coverage% to $current_coverage%"
-          if (( current_coverage < baseline_coverage )); then
+          if [[ "$current_coverage" -lt "$baseline_coverage" ]]; then
             echo "Coverage decreased from $baseline_coverage% to $current_coverage%"
             exit 1
           fi
