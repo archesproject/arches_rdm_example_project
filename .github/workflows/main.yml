@@ -78,7 +78,13 @@ jobs:
           else
             echo "Coverage didn't decrease. Committing new coverage.json."
             coverage json
+
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+
             git add coverage.json
-            git commit --no-verify
-            git push origin ${{ github.head_ref }}
+            git add .coverage
+
+            git commit -m "automatically update coverage"
+            git push
           fi
