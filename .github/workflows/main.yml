@@ -53,14 +53,6 @@ jobs:
         run: |
           python manage.py makemigrations --check
 
-      - name: Run Arches unit tests
-        run: |
-          python -W default::DeprecationWarning -m coverage run manage.py test tests --pattern="*.py" --settings="tests.test_settings"
-
-      - name: Report coverage
-        run: |
-          coverage report
-
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
@@ -68,6 +60,14 @@ jobs:
           baseline_coverage=$(coverage report -m | sed -n '/TOTAL/ s/.*\s\([0-9.]*%\).*/\1/p' | sed 's/%//')
           echo "Baseline Coverage: $baseline_coverage"
           echo "$baseline_coverage" > .coverage_baseline
+
+      - name: Run Arches unit tests
+        run: |
+          python -W default::DeprecationWarning -m coverage run manage.py test tests --pattern="*.py" --settings="tests.test_settings"
+
+      - name: Report coverage
+        run: |
+          coverage report
   
       - name: Compare coverage with baseline
         run: |
