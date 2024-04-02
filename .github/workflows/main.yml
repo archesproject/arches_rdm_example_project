@@ -87,5 +87,9 @@ jobs:
             git add .coverage
 
             git commit -m "automatically update coverage"
+
+            git fetch origin
+
+            git merge origin/${{ github.event.pull_request.base.ref }}
             git push origin HEAD:${{ github.event.pull_request.base.ref }}
           fi
