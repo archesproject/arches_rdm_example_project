@@ -57,7 +57,7 @@ jobs:
         run: |
           git fetch origin main:main
           git checkout main
-          baseline_coverage=$(coverage report -m | sed -n '/TOTAL/ s/.*\s\([0-9.]*%\).*/\1/p' | sed 's/%//')
+          baseline_coverage=$(coverage report -m | grep TOTAL | awk '{print $4}' | sed 's/%//')
           echo "Baseline Coverage: $baseline_coverage"
           echo "$baseline_coverage" > .coverage_baseline
 
@@ -71,7 +71,7 @@ jobs:
   
       - name: Compare coverage with baseline
         run: |
-          current_coverage=$(coverage report -m | sed -n '/TOTAL/ s/.*\s\([0-9.]*%\).*/\1/p' | sed 's/%//')
+          current_coverage=$(coverage report -m | grep TOTAL | awk '{print $4}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           echo "FOOFOOFOO from $baseline_coverage% to $current_coverage%"
           if (( current_coverage < baseline_coverage )); then
