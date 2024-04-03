@@ -66,8 +66,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: |
-            coverage.json
+          path: coverage.json
+          overwrite: true
 
   check-coverage:
     runs-on: ubuntu-latest
