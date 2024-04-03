@@ -88,6 +88,7 @@ jobs:
       - name: Compare coverage with baseline
         if: github.event_name == 'pull_request'
         run: |
+          echo "COVERAGE_REPORT: $COVERAGE_REPORT"
           current_coverage=$(echo "$COVERAGE_REPORT" | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           baseline_coverage=$(printf "%.0f" "$baseline_coverage")
