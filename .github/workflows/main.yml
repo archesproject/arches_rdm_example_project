@@ -68,7 +68,6 @@ jobs:
           name: coverage-report
           path: |
             coverage.json
-            .coverage
 
   check-coverage:
     runs-on: ubuntu-latest
@@ -111,15 +110,14 @@ jobs:
             echo "Coverage decreased from $baseline_coverage% to $current_coverage%"
             exit 1
           else
-            echo "$baseline_coverage% = $current_coverage%, Coverage didn't decrease. Committing new .coverage and coverage.json."
+            echo "$baseline_coverage% = $current_coverage%, Coverage didn't decrease. Committing new coverage.json."
 
             git config user.name github-actions
             git config user.email github-actions@github.com
 
-            git add .coverage
             git add coverage.json
 
-            git commit -m "automatically update .coverage and coverage.json"
+            git commit -m "automatically update coverage.json"
 
             git push -f origin HEAD:${{ github.head_ref }}
           fi
