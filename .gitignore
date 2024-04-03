@@ -13,7 +13,7 @@ arches_rdm_example_project/webpack/webpack-stats.json
 arches_rdm_example_project/webpack/webpack-user-config.js
 .vscode/
 .coverage
-coverage.json
+coverage.*
 *.egg-info
 .DS_STORE
 CACHE
