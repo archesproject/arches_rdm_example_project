@@ -116,5 +116,5 @@ jobs:
 
             git commit -m "automatically update .coverage and coverage.json"
 
-            git push -f origin HEAD:${GITHUB_REF#refs/pull/}/${{ github.event.pull_request.head.ref#refs/heads/ }}
+            git push -f origin HEAD:${{ github.head_ref }}
           fi
