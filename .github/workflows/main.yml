@@ -60,7 +60,9 @@ jobs:
       - name: Report coverage
         run: |
           coverage report
-          echo "::set-output name=coverage-report::$(coverage report -m)"
+          coverage report -m > coverage_report.txt
+        env:
+          COVERAGE_REPORT_PATH: coverage_report.txt
 
   update-coverage:
     runs-on: ubuntu-latest
@@ -73,6 +75,10 @@ jobs:
           python-version: '3.x' # Use the latest available version
           check-latest: true
 
+      - name: Set up environment
+        run: |
+          export COVERAGE_REPORT=$(cat $COVERAGE_REPORT_PATH)
+
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
@@ -82,7 +88,7 @@ jobs:
       - name: Compare coverage with baseline
         if: github.event_name == 'pull_request'
         run: |
-          current_coverage=$(echo "${{ needs.build.outputs.coverage-report }}" | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
+          current_coverage=$(echo "$COVERAGE_REPORT" | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           baseline_coverage=$(printf "%.0f" "$baseline_coverage")
           if [[ "$current_coverage" -lt "$baseline_coverage" ]]; then
