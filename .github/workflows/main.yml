@@ -60,13 +60,14 @@ jobs:
 
       - name: Report coverage
         run: |
-          coverage report -m > coverage_report.txt
+          coverage report
+          coverage json
 
       - name: Upload coverage report as artifact
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: coverage_report.txt
+          path: coverage.json
 
   update-coverage:
     runs-on: ubuntu-latest
@@ -95,24 +96,23 @@ jobs:
       - name: Compare coverage with baseline
         if: github.event_name == 'pull_request'
         run: |
-          cat coverage_report.txt
+          current_coverage=$(cat coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
 
+          echo "$current_coverage"
 
-          current_coverage=$(cat coverage_report.txt | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           baseline_coverage=$(printf "%.0f" "$baseline_coverage")
+
           if [[ "$current_coverage" -lt "$baseline_coverage" ]]; then
             echo "Coverage decreased from $baseline_coverage% to $current_coverage%"
             exit 1
           else
-            echo "Coverage didn't decrease. Committing new coverage.json."
-            coverage json
+            echo "$baseline_coverage% =  $current_coverage%, Coverage didn't decrease. Committing new .coverage and coverage.json."
 
             git config user.name github-actions
             git config user.email github-actions@github.com
 
             git add coverage.json
-            git add .coverage
 
             git commit -m "automatically update .coverage and coverage.json"
 
