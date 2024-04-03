@@ -115,7 +115,7 @@ jobs:
             git config user.name github-actions
             git config user.email github-actions@github.com
 
-            git add coverage.json
+            git add -f coverage.json
 
             git commit -m "automatically update coverage.json"
 
