@@ -60,7 +60,12 @@ jobs:
       - name: Report coverage
         run: |
           coverage report
+          echo "::set-output name=coverage-report::$(coverage report -m)"
 
+  update-coverage:
+    runs-on: ubuntu-latest
+    needs: [build-python-3.10, build-python-3.11, build-python-3.12]
+    steps:
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
@@ -70,7 +75,7 @@ jobs:
       - name: Compare coverage with baseline
         if: github.event_name == 'pull_request'
         run: |
-          current_coverage=$(coverage report -m | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
+          current_coverage=$(echo "${{ needs.build.outputs.coverage-report }}" | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           baseline_coverage=$(printf "%.0f" "$baseline_coverage")
           if [[ "$current_coverage" -lt "$baseline_coverage" ]]; then
@@ -86,7 +91,7 @@ jobs:
             git add coverage.json
             git add .coverage
 
-            git commit -m "automatically update coverage"
+            git commit -m "automatically update .coverage and coverage.json"
 
             git push -f origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
