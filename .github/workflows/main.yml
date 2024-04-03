@@ -23,9 +23,6 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
-    outputs:
-      coverage-report-path: ${{ steps.generate-coverage-report.outputs.coverage-report-path }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -63,10 +60,7 @@ jobs:
 
       - name: Report coverage
         run: |
-          coverage report
           coverage report -m > coverage_report.txt
-        env:
-          COVERAGE_REPORT_PATH: coverage_report.txt
 
       - name: Upload coverage report as artifact
         uses: actions/upload-artifact@v2
@@ -86,32 +80,25 @@ jobs:
           python-version: '3.x' # Use the latest available version
           check-latest: true
 
-      - name: Download coverage report artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: coverage-report
-          path: ./
-        
-      - name: Read coverage report
-        run: |
-          COVERAGE_REPORT_PATH=$(find . -name 'coverage_report.txt' -type f)
-          echo "COVERAGE_REPORT_PATH=$COVERAGE_REPORT_PATH" >> $GITHUB_ENV
-
-      - name: Set up environment
-        run: |
-          export COVERAGE_REPORT=$(cat $COVERAGE_REPORT_PATH)
-
       - name: Retrieve baseline coverage
         run: |
           git fetch origin main:main
           baseline_coverage=$(git show main:coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
           echo "$baseline_coverage" > .coverage_baseline
   
+      - name: Download coverage report artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-report
+          path: .
+
       - name: Compare coverage with baseline
         if: github.event_name == 'pull_request'
         run: |
-          echo "COVERAGE_REPORT: $COVERAGE_REPORT"
-          current_coverage=$(echo "$COVERAGE_REPORT" | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
+          cat coverage_report.txt
+
+
+          current_coverage=$(cat coverage_report.txt | grep TOTAL | awk '{print int($4)}' | sed 's/%//')
           baseline_coverage=$(cat .coverage_baseline)
           baseline_coverage=$(printf "%.0f" "$baseline_coverage")
           if [[ "$current_coverage" -lt "$baseline_coverage" ]]; then
