@@ -13,7 +13,7 @@ jobs:
         image: postgis/postgis:13-3.0
         env:
           POSTGRES_PASSWORD: postgis
-          POSTGRES_DB: ${{ github.repository_name }}
+          POSTGRES_DB: ${{ github.event.repository.name }}
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -40,12 +40,12 @@ jobs:
 
       - name: Install python packages
         run: |
-          echo "${{ github.repository_name }}"
+          echo "${{ github.event.repository.name }}"
 
           python -m pip install --upgrade pip
           pip install .
-          pip install -r ${{ github.repository_name }}/install/requirements.txt
-          pip install -r ${{ github.repository_name }}/install/requirements_dev.txt
+          pip install -r ${{ github.event.repository.name }}/install/requirements.txt
+          pip install -r ${{ github.event.repository.name }}/install/requirements_dev.txt
           echo Python packages installed
 
       - uses: ankane/setup-elasticsearch@v1
