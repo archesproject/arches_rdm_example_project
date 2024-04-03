@@ -40,6 +40,8 @@ jobs:
 
       - name: Install python packages
         run: |
+          echo "$(dirname $(dirname $(dirname $GITHUB_WORKSPACE)))"
+          
           python -m pip install --upgrade pip
           pip install .
           pip install -r arches_rdm_example_project/install/requirements.txt
