@@ -108,7 +108,7 @@ jobs:
             echo "Coverage decreased from $baseline_coverage% to $current_coverage%"
             exit 1
           else
-            echo "$baseline_coverage% = $current_coverage%, Coverage didn't decrease. Committing new coverage.json."
+            echo "$baseline_coverage% == $current_coverage%, Coverage didn't decrease. Committing new coverage.json."
 
             git config user.name github-actions
             git config user.email github-actions@github.com
