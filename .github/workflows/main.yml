@@ -40,8 +40,6 @@ jobs:
 
       - name: Install python packages
         run: |
-          echo "${{ github.event.repository.name }}"
-
           python -m pip install --upgrade pip
           pip install .
           pip install -r ${{ github.event.repository.name }}/install/requirements.txt
@@ -65,7 +63,7 @@ jobs:
           coverage json
 
       - name: Upload coverage report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: |
@@ -84,7 +82,7 @@ jobs:
           check-latest: true
 
       - name: Download coverage report artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-report
           path: .
@@ -96,6 +94,12 @@ jobs:
       - name: Retrieve baseline coverage
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
+
+          if ! git show ${{ github.event.pull_request.base.ref }}:coverage.json > /dev/null; then
+            echo "Error: coverage.json does not exist in the branch."
+            exit 1
+          fi
+
           baseline_coverage=$(git show ${{ github.event.pull_request.base.ref }}:coverage.json | grep -o '"totals": {[^}]*' | grep -o '"percent_covered": [0-9.]*' | awk -F ': ' '{print $2}')
           echo "$baseline_coverage" > .coverage_baseline
 
@@ -116,8 +120,6 @@ jobs:
             git config user.email github-actions@github.com
 
             git add -f coverage.json
-
             git commit -m "automatically update coverage.json"
-
             git push -f origin HEAD:${{ github.head_ref }}
           fi
