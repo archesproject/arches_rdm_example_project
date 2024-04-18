@@ -20,7 +20,7 @@ jobs:
           CURRENT_BRANCH=$(echo "${{ github.ref }}" | cut -d'/' -f3)
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
 
-          echo CURRENT_BRANCH
+          echo $CURRENT_BRANCH
 
           COMMITS_BEHIND=$(git log --oneline origin/$TARGET_BRANCH ^$CURRENT_BRANCH)
 
