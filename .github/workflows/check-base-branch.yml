@@ -1,4 +1,4 @@
-name: Check Base Branch Before Merge
+name: Check Base Branch
 
 on:
   pull_request:
@@ -20,6 +20,6 @@ jobs:
           CURRENT_BRANCH=$(git rev-parse HEAD)
           
           if [ "$BASE_BRANCH" != "$CURRENT_BRANCH" ]; then
-            echo "ERROR: The branch $BASE_BRANCH is not based off the latest version of the target branch $CURRENT_BRANCH."
+            echo "ERROR: The branch is not based off the latest version of the target branch."
             exit 1
           fi
