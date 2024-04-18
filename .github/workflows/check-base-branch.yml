@@ -21,6 +21,7 @@ jobs:
           COMMITS_BEHIND=$(git log --oneline origin/$MERGE_BRANCH ^HEAD)
 
           echo $MERGE_BRANCH
+          echo HEAD
 
           if [ -n "$COMMITS_BEHIND" ]; then
               echo "Your branch is behind the target branch. The following commits are missing:"
