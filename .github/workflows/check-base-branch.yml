@@ -17,12 +17,13 @@ jobs:
         run: |
           git fetch origin
           
-          CURRENT_BRANCH=$(echo "${{ github.ref }}" | cut -d'/' -f3)
+          CURRENT_BRANCH=$(echo "${{ github.ref }}" | sed 's|.*/||')
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
 
-          echo $CURRENT_BRANCH
+          COMMON_ANCESTOR=$(git merge-base $CURRENT_BRANCH origin/$TARGET_BRANCH)
+          COMMITS_BEHIND=$(git rev-list --count origin/main ^$COMMON_ANCESTOR)
 
-          COMMITS_BEHIND=$(git log --oneline origin/$TARGET_BRANCH ^$CURRENT_BRANCH)
+          echo $COMMITS_BEHIND
 
           if [ -n "$COMMITS_BEHIND" ]; then
               echo "Your branch is behind the target branch. The following commits are missing:"
