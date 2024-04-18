@@ -18,7 +18,8 @@ jobs:
           git fetch origin
           
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
-          COMMITS_BEHIND=$(git log --oneline origin/$TARGET_BRANCH ^HEAD)
+          CURRENT_BRANCH="${{ github.event.pull_request.head.ref }}"
+          COMMITS_BEHIND=$(git log --oneline origin/$TARGET_BRANCH origin/$CURRENT_BRANCH)
 
           if [ -n "$COMMITS_BEHIND" ]; then
               echo "Your branch is behind the target branch. The following commits are missing:"
