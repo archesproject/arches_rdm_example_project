@@ -17,7 +17,7 @@ jobs:
         run: |
           git fetch origin
           
-          CURRENT_BRANCH=${{ github.ref }}
+          CURRENT_BRANCH=${{ github.head_ref }}
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
 
           echo $CURRENT_BRANCH
