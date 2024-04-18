@@ -20,6 +20,10 @@ jobs:
           CURRENT_BRANCH=$(echo "${{ github.ref }}" | sed 's|.*/||')
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
 
+          echo $CURRENT_BRANCH
+          echo $TARGET_BRANCH
+
+
           COMMON_ANCESTOR=$(git merge-base $CURRENT_BRANCH origin/$TARGET_BRANCH)
           COMMITS_BEHIND=$(git rev-list --count origin/main ^$COMMON_ANCESTOR)
 
