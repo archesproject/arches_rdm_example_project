@@ -1,12 +1,11 @@
-name: Check Base Branch
+name: Check Base Branch Before Merge
 
 on:
-  pull_request:
   pull_request_review:
     types: [submitted]
 
 jobs:
-  check-base-branch:
+  check-base-branch-before-merge:
     runs-on: ubuntu-latest
 
     steps:
