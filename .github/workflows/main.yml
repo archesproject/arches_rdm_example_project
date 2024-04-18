@@ -17,7 +17,7 @@ jobs:
         run: |
           git fetch origin --prune
           
-          CURRENT_BRANCH=${{ github.head_ref }}
+          CURRENT_BRANCH=${{ github.event.pull_request.head.ref }}
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
 
           COMMON_ANCESTOR=$(git merge-base origin/$CURRENT_BRANCH origin/$TARGET_BRANCH)
