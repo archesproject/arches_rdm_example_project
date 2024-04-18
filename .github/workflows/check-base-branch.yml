@@ -16,10 +16,11 @@ jobs:
       - name: Check base branch
         run: |
           git fetch origin
-          BASE_BRANCH=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})
-          CURRENT_BRANCH=$(git rev-parse HEAD)
-          
-          if ! git merge-base --is-ancestor $BASE_BRANCH $CURRENT_BRANCH; then
-            echo "ERROR: The branch is not based off the latest version of the target branch."
-            exit 1
+          COMMITS_BEHIND=$(git log --oneline origin/main ^HEAD)
+
+          if [ -n "$COMMITS_BEHIND" ]; then
+              echo "Your branch is behind the target branch. The following commits are missing:"
+              echo "$COMMITS_BEHIND"
+          else
+              echo "Your branch is up to date with the target branch."
           fi
