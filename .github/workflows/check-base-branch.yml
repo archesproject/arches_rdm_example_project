@@ -15,7 +15,7 @@ jobs:
 
       - name: Check base branch
         run: |
-          git fetch origin
+          git fetch origin --prune
           
           CURRENT_BRANCH=${{ github.head_ref }}
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
