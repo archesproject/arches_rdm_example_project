@@ -17,7 +17,7 @@ jobs:
         run: |
           git fetch origin
           
-          CURRENT_BRANCH=$(echo "${{ github.ref }}" | sed 's|.*/||')
+          CURRENT_BRANCH=${{ github.ref }}
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
 
           echo $CURRENT_BRANCH
