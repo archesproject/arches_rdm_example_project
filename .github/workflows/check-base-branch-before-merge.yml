@@ -6,6 +6,7 @@ on:
 
 jobs:
   check-base-branch-before-merge:
+    if: github.event.review.state == 'APPROVED'
     runs-on: ubuntu-latest
 
     steps:
