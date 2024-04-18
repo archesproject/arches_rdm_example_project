@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Check base branch
         run: |
@@ -19,7 +19,7 @@ jobs:
           BASE_BRANCH=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})
           CURRENT_BRANCH=$(git rev-parse HEAD)
           
-          if [ "$BASE_BRANCH" != "$CURRENT_BRANCH" ]; then
+          if ! git merge-base --is-ancestor $BASE_BRANCH $CURRENT_BRANCH; then
             echo "ERROR: The branch is not based off the latest version of the target branch."
             exit 1
           fi
