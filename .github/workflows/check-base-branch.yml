@@ -16,10 +16,4 @@ jobs:
       - name: Check base branch
         run: |
           git fetch origin
-          BASE_BRANCH=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})
-          CURRENT_BRANCH=$(git rev-parse HEAD)
-          
-          if ! git merge-base --is-ancestor $BASE_BRANCH $CURRENT_BRANCH; then
-            echo "ERROR: The branch is not based off the latest version of the target branch."
-            exit 1
-          fi
+          git merge-base --is-ancestor ${GITHUB_HEAD_REF} ${GITHUB_BASE_REF} || (echo "ERROR: The branch is not based off the latest version of the target branch." && exit 1)
