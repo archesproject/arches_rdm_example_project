@@ -20,6 +20,6 @@ jobs:
           CURRENT_BRANCH=$(git rev-parse HEAD)
           
           if [ "$BASE_BRANCH" != "$CURRENT_BRANCH" ]; then
-            echo "ERROR: The branch is not based off the latest version of the target branch."
+            echo "ERROR: The branch $BASE_BRANCH is not based off the latest version of the target branch $CURRENT_BRANCH."
             exit 1
           fi
