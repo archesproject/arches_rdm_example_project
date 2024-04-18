@@ -5,7 +5,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('', include('arches.urls')),
-    path(r"^", include("arches_rdm.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.SHOW_LANGUAGE_SWITCH is True:
