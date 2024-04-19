@@ -100,6 +100,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.pull_request.base.ref }}-coverage-report
+          github-token: ${{ secrets.GH_PAT }}
           path: .
 
       - name: Compare coverage with baseline
