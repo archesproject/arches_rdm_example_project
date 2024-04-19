@@ -1,0 +1,40 @@
+name: Update Test Coverage Artifact
+
+on:
+  pull_request_target:
+    types:
+      - closed
+
+jobs:
+  update-test-coverage-artifact:
+    # if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    services:
+          postgres:
+            image: postgis/postgis:13-3.0
+            env:
+              POSTGRES_PASSWORD: postgis
+              POSTGRES_DB: ${{ github.event.repository.name }}
+            ports:
+              - 5432:5432
+            options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+            
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          check-latest: true
+
+      - name: Install Java, GDAL, and other system dependencies
+        run: |
+          echo ${{ github.event.pull_request.head.ref }}
+          echo ${{ github.event.pull_request.base.ref }}
