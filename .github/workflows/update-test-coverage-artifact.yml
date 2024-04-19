@@ -8,13 +8,13 @@ on:
         required: true
         default: true
         type: boolean
-  pull_request:
-    types:
-      - closed
+  # pull_request:
+  #   types:
+  #     - closed
 
 jobs:
   update-test-coverage-artifact:
-    if: github.event.pull_request.merged == true || ${{ inputs.isManual }} == true
+    # if: github.event.pull_request.merged == true || ${{ inputs.isManual }} == true
     runs-on: ubuntu-latest
     
     services:
