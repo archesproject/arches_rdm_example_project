@@ -88,3 +88,8 @@ jobs:
         with:
           name: ${{ github.event.pull_request.base.ref }}-coverage-report
           path: coverage.json
+
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: ${{ github.event.pull_request.head.ref }}-coverage-report
+          
