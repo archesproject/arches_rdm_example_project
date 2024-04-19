@@ -8,9 +8,9 @@ on:
         required: true
         default: true
         type: boolean
-  # pull_request:
-  #   types:
-  #     - closed
+  pull_request:
+    types:
+      - closed
 
 jobs:
   foo:
