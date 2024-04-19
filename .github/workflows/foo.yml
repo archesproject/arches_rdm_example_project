@@ -13,7 +13,7 @@ on:
   #     - closed
 
 jobs:
-  update-test-coverage-artifact:
+  foo:
     # if: github.event.pull_request.merged == true || ${{ inputs.isManual }} == true
     runs-on: ubuntu-latest
     
