@@ -1,4 +1,4 @@
-name: Foo
+name: Update Test Coverage Artifact
 
 on:
   workflow_dispatch:
@@ -13,8 +13,8 @@ on:
       - closed
 
 jobs:
-  foo:
-    # if: github.event.pull_request.merged == true || ${{ inputs.isManual }} == true
+  update-test-coverage-artifact:
+    if: github.event.pull_request.merged == true || ${{ inputs.isManual }} == true
     runs-on: ubuntu-latest
     
     services:
