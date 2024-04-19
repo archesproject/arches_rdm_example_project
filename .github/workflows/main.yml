@@ -6,13 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-base-branch:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
   build:
     runs-on: ubuntu-latest
     services:
