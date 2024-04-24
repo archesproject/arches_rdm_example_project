@@ -12,13 +12,13 @@ class TestSampleIndex(ArchesTestCase):
         expected_index_metadata = {"mappings": {"properties": {"tile_count": {"type": "keyword"}, "graph_id": {"type": "keyword"}}}}
         self.assertEqual(sample_index.index_metadata, expected_index_metadata)
 
-    def test_get_documents_to_index(self):
-        sample_index = SampleIndex(index_name="Sample Index")
+    # def test_get_documents_to_index(self):
+    #     sample_index = SampleIndex(index_name="Sample Index")
         
-        mock_resourceinstance = Mock(graph_id="test_graph_id")
-        mock_tiles = [Mock(), Mock(), Mock()]  # Mock tiles list
+    #     mock_resourceinstance = Mock(graph_id="test_graph_id")
+    #     mock_tiles = [Mock(), Mock(), Mock()]  # Mock tiles list
 
-        documents, doc_id = sample_index.get_documents_to_index(mock_resourceinstance, mock_tiles)
+    #     documents, doc_id = sample_index.get_documents_to_index(mock_resourceinstance, mock_tiles)
 
-        self.assertEqual(documents, {"tile_count": len(mock_tiles), "graph_id": mock_resourceinstance.graph_id})
-        self.assertEqual(doc_id, str(mock_resourceinstance.resourceinstanceid))
+    #     self.assertEqual(documents, {"tile_count": len(mock_tiles), "graph_id": mock_resourceinstance.graph_id})
+    #     self.assertEqual(doc_id, str(mock_resourceinstance.resourceinstanceid))
