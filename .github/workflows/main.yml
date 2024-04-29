@@ -51,13 +51,6 @@ jobs:
         with:
           elasticsearch-version: 8
 
-      - name: Webpack frontend files
-        run: |
-          echo "Removing yarn.lock due to yarn v1 package resolution issues"
-          echo "https://github.com/iarna/wide-align/issues/63"
-          rm yarn.lock 2>/dev/null || true  # silent fail if yarn.lock doesn't exist
-          yarn && yarn build_test
-
       - name: Check for missing migrations
         run: |
           python manage.py makemigrations --check
@@ -130,13 +123,6 @@ jobs:
       - uses: ankane/setup-elasticsearch@v1
         with:
           elasticsearch-version: 8
-
-      - name: Webpack frontend files
-        run: |
-          echo "Removing yarn.lock due to yarn v1 package resolution issues"
-          echo "https://github.com/iarna/wide-align/issues/63"
-          rm yarn.lock 2>/dev/null || true  # silent fail if yarn.lock doesn't exist
-          yarn && yarn build_test
 
       - name: Check for missing migrations
         run: |
