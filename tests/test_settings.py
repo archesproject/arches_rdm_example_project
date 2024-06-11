@@ -25,9 +25,13 @@ try:
 except ImportError:  # unable to import prior to installing requirements.txt in setup.py
     pass
 
-PACKAGE_NAME = "arches"
+PACKAGE_NAME = "arches_rdm_example_project"
+APP_NAME = "arches_rdm_example_project"
+
+APP_ROOT = os.path.dirname(__file__)
 TEST_ROOT = os.path.normpath(os.path.join(ROOT_DIR, "..", "tests"))
-APP_ROOT = ""
+
+ROOT_URLCONF = "arches_rdm_example_project.arches_rdm_example_project.urls"
 
 ARCHES_APPLICATIONS = ()
 
@@ -45,11 +49,29 @@ RESOURCE_GRAPH_LOCATIONS = (os.path.join(TEST_ROOT, "fixtures", "resource_graphs
 ONTOLOGY_FIXTURES = os.path.join(TEST_ROOT, "fixtures", "ontologies", "test_ontology")
 ONTOLOGY_PATH = os.path.join(TEST_ROOT, "fixtures", "ontologies", "cidoc_crm")
 
-BUSISNESS_DATA_FILES = (
+BUSINESS_DATA_FILES = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+DATABASES = {
+    "default": {
+        "ATOMIC_REQUESTS": False,
+        "AUTOCOMMIT": True,
+        "CONN_MAX_AGE": 0,
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "HOST": "localhost",
+        "NAME": "arches_rdm_example_project",
+        "OPTIONS": {},
+        "PASSWORD": "postgis",
+        "PORT": "5432",
+        "POSTGIS_TEMPLATE": "template_postgis",
+        "TEST": {"CHARSET": None, "COLLATION": None, "MIRROR": None, "NAME": None},
+        "TIME_ZONE": None,
+        "USER": "postgres",
+    }
+}
 
 CACHES = {
     "default": {
@@ -61,37 +83,20 @@ CACHES = {
     },
 }
 
+LOGGING["loggers"]["arches"]["level"] = "ERROR"
+
 ELASTICSEARCH_PREFIX = "test"
 
 TEST_RUNNER = "tests.base_test.ArchesTestRunner"
+SILENCED_SYSTEM_CHECKS.append(
+    "arches.W001"
+)  # Cache backend does not support rate-limiting
 
 # could add Chrome, PhantomJS etc... here
 LOCAL_BROWSERS = []  # ['Firefox']
 
-# these are set in Travis CI
-SAUCE_USERNAME = os.environ.get("SAUCE_USERNAME")
-SAUCE_ACCESS_KEY = os.environ.get("SAUCE_ACCESS_KEY")
-
 ENABLE_USER_SIGNUP = True
 FORCE_USER_SIGNUP_EMAIL_AUTHENTICATION = True
-
-RUN_LOCAL = True
-if SAUCE_USERNAME and SAUCE_ACCESS_KEY:
-    RUN_LOCAL = False
-
-# browser/os combinations to use with saucelabs
-REMOTE_BROWSERS = [
-    # {"platform": "Windows 8.1",
-    #  "browserName": "internet explorer",
-    #  "version": "11"},
-    # {"platform": "Mac OS X 10.9",
-    #  "browserName": "chrome",
-    #  "version": "53"},
-    # {"platform": "Linux",
-    #  "browserName": "firefox",
-    #  "version": "45"}
-]
-
 
 OVERRIDE_RESOURCE_MODEL_LOCK = True
 
@@ -99,7 +104,9 @@ ENABLE_TWO_FACTOR_AUTHENTICATION = False
 FORCE_TWO_FACTOR_AUTHENTICATION = False
 
 DATATYPE_LOCATIONS.append("tests.fixtures.datatypes")
-ELASTICSEARCH_HOSTS = [{"scheme": "http", "host": "localhost", "port": ELASTICSEARCH_HTTP_PORT}]
+ELASTICSEARCH_HOSTS = [
+    {"scheme": "http", "host": "localhost", "port": ELASTICSEARCH_HTTP_PORT}
+]
 LANGUAGES = [
     ("de", _("German")),
     ("en", _("English")),
