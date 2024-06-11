@@ -1,1 +1,3 @@
 arches~=7.5.0a1
+pre-commit
+black==24.4.2

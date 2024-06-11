@@ -141,7 +141,7 @@ run_load_package() {
 	echo "----- *** LOADING PACKAGE: ${ARCHES_PROJECT} *** -----"
 	echo ""
 	cd ${APP_FOLDER}
-	../ENV/bin/python manage.py packages -o load_package -s ../arches-rdm/arches_rdm/pkg -db -dev -y
+	../ENV/bin/python manage.py packages -o load_package -s ../arches-lingo/arches_lingo/pkg -db -dev -y
 }
 
 # "exec" means that it will finish building???

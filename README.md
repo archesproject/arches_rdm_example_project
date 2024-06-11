@@ -9,11 +9,11 @@
     
     b.  If not using the Github CLI: `git clone https://github.com/archesproject/arches_rdm_example_project.git`
 
-2. Download the arches-rdm package:
+2. Download the arches-lingo package:
 
-    a.  If using the [Github CLI](https://cli.github.com/): `gh repo clone archesproject/arches-rdm`
+    a.  If using the [Github CLI](https://cli.github.com/): `gh repo clone archesproject/arches-lingo`
 
-    b.  If not using the Github CLI: `git clone https://github.com/archesproject/arches-rdm.git`
+    b.  If not using the Github CLI: `git clone https://github.com/archesproject/arches-lingo.git`
 
 3. Create a virtual environment outside of both repositories: 
     ```
@@ -25,9 +25,9 @@
     source ENV/bin/activate
     ```
 
-5. Navigate to the arches-rdm package, and install it into the virtual environment:
+5. Navigate to the arches-lingo package, and install it into the virtual environment:
     ```
-    cd arches-rdm
+    cd arches-lingo
     pip install -e .
     ```
 
@@ -63,10 +63,10 @@
 
 12. (optional) If you ran `yarn start` in the previous step, you will need to open a new terminal window and activate the virutal environment in the new terminal window.
 
-13. Navigate to the arches_rdm_example_project top-level directory, and install the ontologies, branches, and resource models from the arches-rdm package.
+13. Navigate to the arches_rdm_example_project top-level directory, and install the ontologies, branches, and resource models from the arches-lingo package.
     ```
     python manage.py setup_db
-    python manage.py packages -o load_package -s ../arches-rdm/arches_rdm/pkg --yes -db
+    python manage.py packages -o load_package -s ../arches-lingo/arches_lingo/pkg --yes -db
     ```
 
 14. In the terminal window that is running the Django server, halt the server and restart it.
@@ -77,11 +77,11 @@
 
 ## Committing changes
 
-NOTE: Changes are commited to the arches-rdm repository. 
+NOTE: Changes are commited to the arches-lingo repository. 
 
 1. Navigate to the repository
     ```
-    cd arches-rdm
+    cd arches-lingo
     ```
 
 2. Cut a new git branch
@@ -93,7 +93,7 @@ NOTE: Changes are commited to the arches-rdm repository.
 
     1. Manually export the model or branch from the project
 
-    2. Manually move the exported model or branch into one of the subdirectories in the `arches-rdm/arches_rdm/pkg/graphs` directory.
+    2. Manually move the exported model or branch into one of the subdirectories in the `arches-lingo/arches_lingo/pkg/graphs` directory.
 
 4. Add your changes to the current git commit
     ```
@@ -107,4 +107,4 @@ NOTE: Changes are commited to the arches-rdm repository.
     git push origin HEAD
     ```
 
-6. Navigate to https://github.com/archesproject/arches-rdm/pulls to see and commit the pull request
+6. Navigate to https://github.com/archesproject/arches-lingo/pulls to see and commit the pull request

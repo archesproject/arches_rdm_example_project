@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# APP and YARN folder locations
+# APP and npm folder locations
 # ${WEB_ROOT} and ${ARCHES_ROOT} is defined in the Dockerfile, ${ARCHES_PROJECT} in env_file.env
 if [[ -z ${ARCHES_PROJECT} ]]; then
 	APP_FOLDER=${ARCHES_ROOT}
@@ -10,12 +10,12 @@ else
 	PACKAGE_JSON_FOLDER=${ARCHES_ROOT}
 fi
 
-YARN_MODULES_FOLDER=${PACKAGE_JSON_FOLDER}/$(awk \
-	-F '--install.modules-folder' '{print $2}' ${PACKAGE_JSON_FOLDER}/.yarnrc \
-	| awk '{print $1}' \
-	| tr -d $'\r' \
-	| tr -d '"' \
-	| sed -e "s/^\.\///g")
+# npm_MODULES_FOLDER=${PACKAGE_JSON_FOLDER}/$(awk \
+# 	-F '--install.modules-folder' '{print $2}' ${PACKAGE_JSON_FOLDER}/.npmrc \
+# 	| awk '{print $1}' \
+# 	| tr -d $'\r' \
+# 	| tr -d '"' \
+# 	| sed -e "s/^\.\///g")
 
 # Environmental Variables
 export DJANGO_PORT=${DJANGO_PORT:-8000}
@@ -94,14 +94,14 @@ init_arches() {
 	fi
 }
 
-# Yarn
-install_yarn_components() {
-	if [[ ! -d ${YARN_MODULES_FOLDER} ]] || [[ ! "$(ls ${YARN_MODULES_FOLDER})" ]]; then
-		echo "Yarn modules do not exist, installing..."
-		cd ${PACKAGE_JSON_FOLDER}
-		yarn install
-	fi
-}
+# npm
+# install_npm_components() {
+# 	if [[ ! -d ${npm_MODULES_FOLDER} ]] || [[ ! "$(ls ${npm_MODULES_FOLDER})" ]]; then
+# 		echo "npm modules do not exist, installing..."
+# 		cd ${PACKAGE_JSON_FOLDER}
+# 		npm install
+# 	fi
+# }
 
 #### Misc
 copy_settings_local() {
@@ -141,7 +141,7 @@ run_load_package() {
 	echo "----- *** LOADING PACKAGE: ${ARCHES_PROJECT} *** -----"
 	echo ""
 	cd ${APP_FOLDER}
-	../ENV/bin/python manage.py packages -o load_package -a arches_rdm -db -dev -y
+	../ENV/bin/python manage.py packages -o load_package -a arches_lingo -db -dev -y
 }
 
 # "exec" means that it will finish building???
@@ -157,7 +157,6 @@ run_django_server() {
 #### Main commands
 run_arches() {
 	init_arches
-	install_yarn_components
 	run_django_server
 }
 
@@ -167,7 +166,7 @@ run_webpack() {
 	echo ""
 	cd ${APP_FOLDER}
     echo "Running Webpack"
-	exec /bin/bash -c "source ../ENV/bin/activate && cd /web_root/arches_rdm_example_project/arches_rdm_example_project && yarn install && wait-for-it arches-rdm-example-project:80 -t 1200 && yarn start"
+	exec /bin/bash -c "source ../ENV/bin/activate && cd /web_root/arches_rdm_example_project/arches_rdm_example_project && npm i && wait-for-it arches-rdm-example-project:80 -t 1200 && npm start"
 }
 ### Starting point ###
 
@@ -213,8 +212,8 @@ do
 			wait_for_db
 			run_migrations
 		;;
-		install_yarn_components)
-			install_yarn_components
+		install_npm_components)
+			install_npm_components
 		;;
 		help|-h)
 			display_help
