@@ -6,15 +6,14 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout arches-shpo
-      uses: actions/checkout@v4
-      with:
-        repository: fargeo/arches-shpo
-        token: ${{ fromJSON(inputs.secrets).FARGEO_AUTOMATION_PAT }}
-        path: arches-shpo
+    # - name: Checkout arches-shpo
+    #   uses: actions/checkout@v4
+    #   with:
+    #     repository: fargeo/arches-shpo
+    #     token: ${{ fromJSON(inputs.secrets).FARGEO_AUTOMATION_PAT }}
+    #     path: arches-shpo
 
     - name: Install arches-shpo
       run: |
-        pip install ./arches-shpo
         echo arches-shpo installed
       shell: bash
