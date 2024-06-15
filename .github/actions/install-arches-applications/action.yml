@@ -1,0 +1,20 @@
+name: 'Install Arches Applications'
+description: 'Manually edit this file to install all Arches Applications declared in settings.py'
+inputs: 
+  secrets:
+    description: 'Secrets from main.yml as JSON'
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout arches-shpo
+      uses: actions/checkout@v4
+      with:
+        repository: fargeo/arches-shpo
+        token: ${{ fromJSON(inputs.secrets).FARGEO_AUTOMATION_PAT }}
+        path: arches-shpo
+
+    - name: Install arches-shpo
+      run: |
+        pip install ./arches-shpo
+        echo arches-shpo installed
+      shell: bash

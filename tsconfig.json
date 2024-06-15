@@ -14,16 +14,16 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "baseUrl": "./src/",
+    "baseUrl": "arches_rdm_example_project/src/",
     "paths": {
       "@/*": [
         "*.ts",
-        "*.vue",
-      ],
-    },
+        "*.vue"
+      ]
+    }
   },
   "include": [
     "**/*.ts",
-    "**/*.vue",
-  ],
+    "**/*.vue"
+  ]
 }
