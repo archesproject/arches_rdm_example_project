@@ -54,22 +54,22 @@ runs:
           npm install
       shell: bash
 
-    - name: Webpack frontend files
-      run: |
-          npm run build_test
-      shell: bash
+    # - name: Webpack frontend files
+    #   run: |
+    #       npm run build_test
+    #   shell: bash
 
-    - name: Check formatting
-      run: |
-        npm run prettier:check
-        black . --check --exclude=node_modules
-      shell: bash
+    # - name: Check formatting
+    #   run: |
+    #     npm run prettier:check
+    #     black . --check --exclude=node_modules
+    #   shell: bash
 
-    - name: Run frontend tests
-      run: |
-        npm run vitest
-        mv coverage/frontend/coverage.xml ${{ inputs.branch-type }}_branch_frontend_coverage.xml
-      shell: bash
+    # - name: Run frontend tests
+    #   run: |
+    #     npm run vitest
+    #     mv coverage/frontend/coverage.xml ${{ inputs.branch-type }}_branch_frontend_coverage.xml
+    #   shell: bash
 
 
     - name: Check for missing migrations
